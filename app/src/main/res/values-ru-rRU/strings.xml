@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="moscow">Москва</string>
+    <string name="condition">Преимущественно солнечно</string>
+    <string name="feeling">"Ощущается как: "</string>
+</resources>
