@@ -3,5 +3,5 @@
     <string name="app_name">WeatherApp</string>
     <string name="moscow">Москва</string>
     <string name="condition">Преимущественно солнечно</string>
-    <string name="feeling">Ощущается как: +30°</string>
+    <string name="feeling">"Ощущается как: "</string>
 </resources>

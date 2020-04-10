@@ -3,5 +3,6 @@
     <string name="moscow">Moscow</string>
     <string name="temperature" translatable="false">+26°</string>
     <string name="condition">Mostly sunny</string>
-    <string name="feeling">Feels like: +30°</string>
+    <string name="feeling">Feels like:</string>
+    <string name="feeling_temperature" translatable="false">+30°</string>
 </resources>
