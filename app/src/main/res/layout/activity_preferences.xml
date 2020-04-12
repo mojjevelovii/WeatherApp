@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".PreferencesActivity">
+
+    <TextView
+        android:id="@+id/tv_preferences_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margins"
+        android:text="@string/preferences_header"
+        android:textAlignment="center"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/medium_font_size"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/sw_dark_theme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margins"
+        android:text="@string/dark_theme"
+        android:textAlignment="textStart"
+        style="@style/MySwitch"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/small_font_size"
+        app:layout_constraintTop_toBottomOf="@id/tv_preferences_header" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/sw_temperature_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margins"
+        android:text="@string/temperature_units"
+        android:textAlignment="textStart"
+        style="@style/MySwitch"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/small_font_size"
+        app:layout_constraintTop_toBottomOf="@id/sw_dark_theme" />
+
+    <CheckBox
+        android:id="@+id/cb_wind_speed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_margins"
+        android:layout_marginTop="@dimen/base_margins"
+        android:layout_marginEnd="@dimen/half_margin"
+        android:layout_marginBottom="@dimen/base_margins"
+        android:text="@string/wind_speed"
+        android:textColor="@color/text_color"
+        android:buttonTint="@color/text_color"
+        android:textSize="@dimen/small_font_size"
+        app:layout_constraintEnd_toStartOf="@id/cb_atmosphere_pressure"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sw_temperature_units" />
+
+    <CheckBox
+        android:id="@+id/cb_atmosphere_pressure"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/text_color"
+        android:layout_marginStart="@dimen/half_margin"
+        android:layout_marginTop="@dimen/base_margins"
+        android:layout_marginEnd="@dimen/base_margins"
+        android:layout_marginBottom="@dimen/base_margins"
+        android:text="@string/pressure"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/small_font_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cb_wind_speed"
+        app:layout_constraintTop_toBottomOf="@id/sw_temperature_units" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
