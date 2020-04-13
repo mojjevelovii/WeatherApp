@@ -5,4 +5,11 @@
     <string name="condition">Mostly sunny</string>
     <string name="feeling">Feels like:</string>
     <string name="feeling_temperature" translatable="false">+30°</string>
+    <string name="city_selection">City selection</string>
+    <string name="prompt_text">Enter the name of the city</string>
+    <string name="preferences_header">Preferences</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="temperature_units">Temperature in F°</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="pressure">Pressure</string>
 </resources>

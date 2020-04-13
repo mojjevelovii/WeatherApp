@@ -4,4 +4,11 @@
     <string name="moscow">Москва</string>
     <string name="condition">Преимущественно солнечно</string>
     <string name="feeling">"Ощущается как: "</string>
+    <string name="city_selection">Выбор города</string>
+    <string name="prompt_text">Введите название города</string>
+    <string name="preferences_header">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="temperature_units">Температура в F°</string>
+    <string name="wind_speed">Скорость ветра</string>
+    <string name="pressure">Давление</string>
 </resources>

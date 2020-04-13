@@ -4,5 +4,6 @@
     <dimen name="big_font_size">90sp</dimen>
     <dimen name="small_font_size">20sp</dimen>
     <dimen name="base_margins">16dp</dimen>
+    <dimen name="half_margin">8dp</dimen>
 
 </resources>
