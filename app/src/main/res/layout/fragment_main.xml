@@ -31,6 +31,7 @@
             android:layout_margin="@dimen/base_margins"
             android:text="@string/moscow"
             android:textAlignment="center"
+            android:textAllCaps="true"
             android:textColor="@color/text_color"
             android:textSize="@dimen/medium_font_size"
             android:textStyle="bold" />
@@ -43,7 +44,6 @@
             android:layout_margin="@dimen/base_margins"
             android:backgroundTint="@color/text_color"
             app:srcCompat="@drawable/ic_browser" />
-
 
 
     </LinearLayout>
@@ -63,21 +63,11 @@
             android:textSize="@dimen/big_font_size" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             app:srcCompat="@drawable/ic_sunny" />
-    </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_condition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/base_margins"
-        android:text="@string/condition"
-        android:textColor="@color/text_color"
-        android:textSize="@dimen/small_font_size"
-        android:textStyle="bold" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -86,13 +76,27 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/tv_condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/base_margins"
+            android:text="@string/condition"
+            android:textAllCaps="true"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/small_font_size"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/tv_feelings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/feeling"
+            android:textAllCaps="true"
             android:textColor="@color/text_color"
-            android:textSize="@dimen/small_font_size" />
+            android:textSize="@dimen/small_font_size"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_feeling_temperature"
@@ -102,7 +106,16 @@
             android:layout_marginStart="6dp"
             android:text="@string/feeling_temperature"
             android:textColor="@color/text_color"
-            android:textSize="@dimen/small_font_size" />
+            android:textSize="@dimen/small_font_size"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_week_weather"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/base_margins"
+        tools:listitem="@layout/weather_item_layout" />
+
 
 </LinearLayout>
