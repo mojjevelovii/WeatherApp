@@ -1,77 +1,80 @@
 package ru.shumilova.weatherapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
-import static ru.shumilova.weatherapp.CitySelectionActivity.CITY_NAME;
-import static ru.shumilova.weatherapp.CitySelectionActivity.SELECT_CITY_REQUEST_CODE;
+import ru.shumilova.weatherapp.city_selection_screen.CitySelectionFragment;
+import ru.shumilova.weatherapp.main_screen.MainFragment;
+import ru.shumilova.weatherapp.navigation.FragmentType;
+import ru.shumilova.weatherapp.navigation.Navigable;
+import ru.shumilova.weatherapp.preferences_screen.PreferencesFragment;
 
-public class MainActivity extends AppCompatActivity {
-    private static final String CITY_NAME_KEY = "CITY_NAME_KEY";
-    private static final String YANDEX_URL = "https://yandex.ru/pogoda/";
-
-    private TextView tvCity;
-    private AppCompatImageView bExtra;
-
+public class MainActivity extends AppCompatActivity implements Navigable {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initView();
-        initButtons();
-    }
-
-    private void initButtons() {
-        tvCity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CitySelectionActivity.class);
-                startActivityForResult(intent, SELECT_CITY_REQUEST_CODE);
-            }
-        });
-
-        bExtra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = YANDEX_URL + tvCity.getText();
-                Uri uri = Uri.parse(url);
-                Intent browser = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(browser);
-            }
-        });
-    }
-
-    private void initView() {
-        tvCity = findViewById(R.id.tv_city);
-        bExtra = findViewById(R.id.iv_extra);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == SELECT_CITY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            tvCity.setText(data.getStringExtra(CITY_NAME));
+        if (savedInstanceState == null) {
+            navigateTo(FragmentType.MAIN, null, true);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(CITY_NAME_KEY, tvCity.getText().toString());
+    public void navigateTo(FragmentType fragmentType, Bundle bundle, Boolean addToBackStack) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        boolean isNeedNewInstance = true;
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            Fragment fragment = fragmentManager.findFragmentByTag(fragmentType.name());
+            if (fragment != null) {
+                fragment.setArguments(bundle);
+                fragmentManager.popBackStackImmediate(fragmentType.name(),0);
+                isNeedNewInstance = false;
+            }
+        }
+
+        if (isNeedNewInstance) {
+            Fragment fragment = getFragment(fragmentType, bundle);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fl_container, fragment, fragmentType.name());
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            if (addToBackStack) {
+                fragmentTransaction.addToBackStack(fragmentType.name());
+            }
+            fragmentTransaction.commit();
+        }
+    }
+
+    private Fragment getFragment(FragmentType fragmentType, Bundle bundle) {
+        Fragment fragment;
+        switch (fragmentType) {
+            case MAIN:
+                fragment = MainFragment.newInstance(bundle);
+                break;
+            case PREFERENCES:
+                fragment = PreferencesFragment.newInstance(bundle);
+                break;
+            case CITY_SELECTION:
+                fragment = CitySelectionFragment.newInstance(bundle);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown fragment type!");
+        }
+        return fragment;
     }
 
     @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        tvCity.setText(savedInstanceState.getString(CITY_NAME_KEY));
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 1)
+            super.onBackPressed();
+        else
+            finish();
     }
 }
