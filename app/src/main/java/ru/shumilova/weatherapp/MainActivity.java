@@ -28,14 +28,27 @@ public class MainActivity extends AppCompatActivity implements Navigable {
     @Override
     public void navigateTo(FragmentType fragmentType, Bundle bundle, Boolean addToBackStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = getFragment(fragmentType, bundle);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fl_container, fragment, fragmentType.name());
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        if (addToBackStack) {
-            fragmentTransaction.addToBackStack("");
+
+        boolean isNeedNewInstance = true;
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            Fragment fragment = fragmentManager.findFragmentByTag(fragmentType.name());
+            if (fragment != null) {
+                fragment.setArguments(bundle);
+                fragmentManager.popBackStackImmediate(fragmentType.name(),0);
+                isNeedNewInstance = false;
+            }
         }
-        fragmentTransaction.commit();
+
+        if (isNeedNewInstance) {
+            Fragment fragment = getFragment(fragmentType, bundle);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fl_container, fragment, fragmentType.name());
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            if (addToBackStack) {
+                fragmentTransaction.addToBackStack(fragmentType.name());
+            }
+            fragmentTransaction.commit();
+        }
     }
 
     private Fragment getFragment(FragmentType fragmentType, Bundle bundle) {
@@ -56,5 +69,12 @@ public class MainActivity extends AppCompatActivity implements Navigable {
         return fragment;
     }
 
-
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 1)
+            super.onBackPressed();
+        else
+            finish();
+    }
 }
