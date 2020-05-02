@@ -45,4 +45,5 @@ public class DataHolder {
     public List<WeatherData> getWeatherDataList() {
         return weatherDataList;
     }
+
 }

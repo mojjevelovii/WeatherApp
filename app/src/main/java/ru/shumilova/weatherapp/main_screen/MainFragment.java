@@ -82,6 +82,7 @@ public class MainFragment extends Fragment {
         onRestoreState(savedInstanceState);
 
         initRecyclerView();
+
     }
 
     private void initRecyclerView() {
