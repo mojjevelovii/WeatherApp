@@ -9,14 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
 
+import ru.shumilova.weatherapp.DailyWeatherAdapter;
+import ru.shumilova.weatherapp.data.DataHolder;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
 import ru.shumilova.weatherapp.R;
@@ -30,7 +36,10 @@ public class MainFragment extends Fragment {
     private TextView tvCity;
     private AppCompatImageView bExtra;
     private AppCompatImageView bSettings;
+    private RecyclerView rvDailyWeather;
     private Navigable navigator;
+
+    private DataHolder dataHolder = new DataHolder();
 
 
     public static MainFragment newInstance(Bundle bundle) {
@@ -71,6 +80,21 @@ public class MainFragment extends Fragment {
             }
         }
         onRestoreState(savedInstanceState);
+
+        initRecyclerView();
+
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        rvDailyWeather.setLayoutManager(layoutManager);
+
+        rvDailyWeather.setAdapter(new DailyWeatherAdapter(dataHolder.getWeatherDataList()));
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), RecyclerView.VERTICAL);
+        itemDecoration.setDrawable(getContext().getDrawable(R.drawable.separator));
+        rvDailyWeather.addItemDecoration(itemDecoration);
     }
 
     @Override
@@ -121,6 +145,7 @@ public class MainFragment extends Fragment {
         tvCity = view.findViewById(R.id.tv_city);
         bExtra = view.findViewById(R.id.iv_extra);
         bSettings = view.findViewById(R.id.iv_settings);
+        rvDailyWeather = view.findViewById(R.id.rv_week_weather);
 
     }
 

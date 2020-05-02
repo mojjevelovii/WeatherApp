@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="moscow">Москва</string>
-    <string name="condition">Преимущественно солнечно</string>
+    <string name="condition">Солнечно</string>
     <string name="feeling">"Ощущается как: "</string>
     <string name="city_selection">Выбор города</string>
     <string name="prompt_text">Введите название города</string>
