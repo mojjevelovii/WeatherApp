@@ -1,4 +1,4 @@
-package ru.shumilova.weatherapp;
+package ru.shumilova.weatherapp.main_screen;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import ru.shumilova.weatherapp.R;
 import ru.shumilova.weatherapp.domain.WeatherData;
 
 public class DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapter.ViewHolder> {

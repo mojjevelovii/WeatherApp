@@ -15,9 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import ru.shumilova.weatherapp.CityListAdapter;
 import ru.shumilova.weatherapp.data.LocalRepository;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;

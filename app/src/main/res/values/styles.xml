@@ -1,16 +1,73 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/accent_color</item>
+    <style name="LightAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="main_background">@color/peach</item>
+        <item name="colorPrimary">@color/pistachio</item>
+        <item name="colorPrimaryDark">@color/beet</item>
+        <item name="colorAccent">@color/ink</item>
         <item name="android:textColorHint">@color/color_light</item>
+        <item name="iconColor">@color/beet</item>
+        <item name="weather_item_layout_text_Color">@color/ink</item>
+        <item name="navigation_background">@color/beet</item>
+        <item name="navigation_checked">@color/pistachio</item>
+        <item name="navigation_default">@color/peach</item>
+        <item name="item_background">@color/pistachio</item>
+        <item name="item_separator">@color/beet</item>
+    </style>
+
+    <style name="DarkAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="main_background">@color/ink</item>
+        <item name="colorPrimary">@color/beet</item>
+        <item name="colorPrimaryDark">@color/pistachio</item>
+        <item name="colorAccent">@color/peach</item>
+        <item name="android:textColorHint">@color/color_light</item>
+        <item name="iconColor">@color/pistachio</item>
+        <item name="weather_item_layout_text_Color">@color/peach</item>
+        <item name="navigation_background">@color/pistachio</item>
+        <item name="navigation_checked">@color/ink</item>
+        <item name="navigation_default">@color/beet</item>
+        <item name="item_background">@color/beet</item>
+        <item name="item_separator">@color/pistachio</item>
     </style>
 
     <style name="MySwitch" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="trackTint">@color/color_light</item>
     </style>
+
+    <style name="WeatherItemLayoutHeader" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">?attr/weather_item_layout_text_Color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+    </style>
+
+    <style name="WeatherItemLayoutDay" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">?attr/weather_item_layout_text_Color</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+    </style>
+
+    <style name="WeatherItemLayoutTemperature" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">?attr/weather_item_layout_text_Color</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/medium_m_font_size</item>
+    </style>
+
+    <style name="MainConditionText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">?attr/weather_item_layout_text_Color</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="MainHeaderText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">?attr/weather_item_layout_text_Color</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+    </style>
+
 
 </resources>

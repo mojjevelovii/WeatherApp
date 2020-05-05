@@ -1,4 +1,4 @@
-package ru.shumilova.weatherapp;
+package ru.shumilova.weatherapp.city_selection_screen;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import ru.shumilova.weatherapp.R;
 
 public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHolder> {
     private List<String> cityNames;

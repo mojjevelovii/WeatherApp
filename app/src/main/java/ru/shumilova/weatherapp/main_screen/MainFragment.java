@@ -16,12 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
 
-import ru.shumilova.weatherapp.DailyWeatherAdapter;
 import ru.shumilova.weatherapp.data.DataHolder;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
@@ -35,7 +33,6 @@ public class MainFragment extends Fragment {
 
     private TextView tvCity;
     private AppCompatImageView bExtra;
-    private AppCompatImageView bSettings;
     private RecyclerView rvDailyWeather;
     private Navigable navigator;
 
@@ -130,23 +127,12 @@ public class MainFragment extends Fragment {
                 startActivity(browser);
             }
         });
-
-        bSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigator.navigateTo(FragmentType.PREFERENCES, null, true);
-            }
-        });
-
-
     }
 
     private void initView(View view) {
         tvCity = view.findViewById(R.id.tv_city);
         bExtra = view.findViewById(R.id.iv_extra);
-        bSettings = view.findViewById(R.id.iv_settings);
         rvDailyWeather = view.findViewById(R.id.rv_week_weather);
-
     }
 
 }

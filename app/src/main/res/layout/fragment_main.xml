@@ -4,117 +4,108 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/base_margins"
-        android:layout_marginEnd="@dimen/base_margins"
-        app:srcCompat="@drawable/ic_settings" />
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:background="?attr/main_background"
+        android:elevation="10dp"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_city"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/base_margins"
-            android:text="@string/moscow"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/medium_font_size"
-            android:textStyle="bold" />
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_extra"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_city"
+                style="@style/MainHeaderText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/base_margins"
+                android:text="@string/moscow" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_extra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/base_margins"
+                app:srcCompat="@drawable/ic_browser" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/base_margins"
-            android:backgroundTint="@color/text_color"
-            app:srcCompat="@drawable/ic_browser" />
+            android:gravity="center"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/tv_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/temperature"
+                android:textColor="?attr/colorPrimaryDark"
+                android:textSize="@dimen/big_font_size" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                app:srcCompat="@drawable/ic_sunny" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_condition"
+                style="@style/MainConditionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/base_margins"
+                android:text="@string/condition"
+                android:textAllCaps="true"
+                android:textSize="@dimen/small_font_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_feelings"
+                style="@style/MainConditionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/feeling" />
+
+            <TextView
+                android:id="@+id/tv_feeling_temperature"
+                style="@style/MainConditionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="6dp"
+                android:text="@string/feeling_temperature"
+                android:textSize="@dimen/small_font_size"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/temperature"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/big_font_size" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:srcCompat="@drawable/ic_sunny" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_condition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/base_margins"
-            android:text="@string/condition"
-            android:textAllCaps="true"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/small_font_size"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_feelings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/feeling"
-            android:textAllCaps="true"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/small_font_size"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_feeling_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="6dp"
-            android:text="@string/feeling_temperature"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/small_font_size"
-            android:textStyle="bold" />
-    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_week_weather"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/base_margins"
+        android:elevation="0dp"
         tools:listitem="@layout/weather_item_layout" />
 
 

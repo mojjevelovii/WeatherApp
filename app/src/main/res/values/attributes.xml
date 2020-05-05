@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="iconColor" format="color" />
+    <attr name="weather_item_layout_text_Color" format="color" />
+    <attr name="main_background" format="color" />
+    <attr name="navigation_background" format="color" />
+    <attr name="navigation_checked" format="color" />
+    <attr name="navigation_default" format="color" />
+    <attr name="item_background" format="color" />
+    <attr name="item_separator" format="color" />
+
+</resources>

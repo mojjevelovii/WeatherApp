@@ -14,6 +14,7 @@ public class LocalRepository {
     private Set<String> citySet = new HashSet<>();
     private static final String LOCAL_REPOSITORY = "LOCAL_REPOSITORY";
     private static final String CITIES = "CITIES";
+    private static final String DARK_THEME = "DARK_THEME";
 
     public LocalRepository(Context context) {
         this.sharedPreferences = context.getSharedPreferences(LOCAL_REPOSITORY, Context.MODE_PRIVATE);
@@ -40,5 +41,15 @@ public class LocalRepository {
             citySet = new HashSet<>();
             return new ArrayList<>();
         }
+    }
+
+    public boolean isDarkTheme() {
+        return sharedPreferences.getBoolean(DARK_THEME, false);
+    }
+
+    public void saveThemeCondition(Boolean condition) {
+        SharedPreferences.Editor spEditor = sharedPreferences.edit();
+        spEditor.putBoolean(DARK_THEME, condition);
+        spEditor.apply();
     }
 }

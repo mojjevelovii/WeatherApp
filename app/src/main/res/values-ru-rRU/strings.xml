@@ -11,4 +11,11 @@
     <string name="temperature_units">Температура в F°</string>
     <string name="wind_speed">Скорость ветра</string>
     <string name="pressure">Давление</string>
+    <string name="home">Домой</string>
+    <string name="info">Информация</string>
+    <string name="settings">Настройки</string>
+    <string name="exit_or_not">Выйти?</string>
+    <string name="yes_exit">Да, выйти</string>
+    <string name="developer_info">Сведения о разработчике</string>
+    <string name="developer_info_disclaimer">Тридцать лет и три года лежал Илья Муромец на печи. Такого подвига самоизоляции еще не знала Русь.</string>
 </resources>
