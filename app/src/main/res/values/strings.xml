@@ -19,5 +19,8 @@
     <string name="yes_exit">Yes, exit</string>
     <string name="developer_info">Developer info</string>
     <string name="developer_info_disclaimer">For thirty years and three years, Ilya Muromets lay on the stove. Russia did not know such a feat of self-isolation.</string>
+    <string name="error_msg_city_not_found">City not found</string>
+    <string name="error_msg_no_connection">No connection</string>
+    <string name="common_ok" translatable="false">OK</string>
 
 </resources>

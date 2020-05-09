@@ -1,6 +1,8 @@
 package ru.shumilova.weatherapp.main_screen;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +23,9 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 
-import ru.shumilova.weatherapp.data.DataHolder;
+import ru.shumilova.weatherapp.data.WeatherRepository;
+import ru.shumilova.weatherapp.data.models.WeatherResponse;
+import ru.shumilova.weatherapp.domain.WeatherState;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
 import ru.shumilova.weatherapp.R;
@@ -32,11 +37,13 @@ public class MainFragment extends Fragment {
     private static final String PARAMS = MainFragment.class.getName() + "PARAMS";
 
     private TextView tvCity;
+    private TextView tvTemperature;
+    private TextView tvCondition;
+    private TextView tvFeelingTemperature;
+    private AppCompatImageView ivWeatherIcon;
     private AppCompatImageView bExtra;
     private RecyclerView rvDailyWeather;
     private Navigable navigator;
-
-    private DataHolder dataHolder = new DataHolder();
 
 
     public static MainFragment newInstance(Bundle bundle) {
@@ -68,18 +75,86 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        WeatherRepository wr = new WeatherRepository();
+        wr.getWeatherData().observe(getViewLifecycleOwner(), new Observer<WeatherState>() {
+            @Override
+            public void onChanged(WeatherState weatherState) {
+                if (weatherState.getErrorType() != null) {
+                    showError(weatherState);
+                } else if (weatherState.getWeatherResponse() != null) {
+                    renderWeather(weatherState.getWeatherResponse());
+                } else if (weatherState.getWeatherWeeklyResponse() != null) {
+                    DailyWeatherAdapter adapter = (DailyWeatherAdapter) rvDailyWeather.getAdapter();
+                    if (adapter != null) {
+                        adapter.setDailyWeatherDataSource(weatherState.getWeatherWeeklyResponse().getList());
+                    }
+                }
+            }
+        });
+
+
         initView(view);
         initButtons();
+        initRecyclerView();
+
         if (getArguments() != null) {
             Serializable params = getArguments().getSerializable(PARAMS);
             if (params != null) {
-                tvCity.setText(((MainParams) params).getCityName());
+                String city = ((MainParams) params).getCityName();
+                wr.getCityWeather(city);
+                wr.getWeatherWeek(city);
             }
+        } else {
+            wr.getCityWeather("Moscow,RU");
+            wr.getWeatherWeek("Moscow,RU");
         }
         onRestoreState(savedInstanceState);
 
-        initRecyclerView();
 
+
+
+    }
+
+    private void showError(WeatherState weatherState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(weatherState.getErrorType().getErrorMsg());
+        builder.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void renderWeather(WeatherResponse weatherResponse) {
+        int intTemperature = (int) weatherResponse.getMain().getTemp();
+
+        String temperature = formatTemperature(intTemperature);
+        tvTemperature.setText(temperature);
+
+        String feelsTemperature;
+        int intFeelsTemperature = (int) weatherResponse.getMain().getFeelsLike();
+
+        feelsTemperature = formatTemperature(intFeelsTemperature);
+        tvFeelingTemperature.setText(feelsTemperature);
+
+        tvCondition.setText(weatherResponse.getWeather().get(0).getDescription());
+        tvCity.setText(weatherResponse.getName());
+
+        ivWeatherIcon.setImageResource(weatherResponse.getWeather().get(0).getIcon().getIconRes());
+    }
+
+    private String formatTemperature(int intFeelsTemperature) {
+        String feelsTemperature;
+        if (intFeelsTemperature > 0) {
+            feelsTemperature = "+" + intFeelsTemperature + "°";
+        } else if (intFeelsTemperature < 0) {
+            feelsTemperature = intFeelsTemperature + "°";
+        } else {
+            feelsTemperature = "0°";
+        }
+        return feelsTemperature;
     }
 
     private void initRecyclerView() {
@@ -87,7 +162,7 @@ public class MainFragment extends Fragment {
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         rvDailyWeather.setLayoutManager(layoutManager);
 
-        rvDailyWeather.setAdapter(new DailyWeatherAdapter(dataHolder.getWeatherDataList()));
+        rvDailyWeather.setAdapter(new DailyWeatherAdapter());
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), RecyclerView.VERTICAL);
         itemDecoration.setDrawable(getContext().getDrawable(R.drawable.separator));
@@ -131,6 +206,10 @@ public class MainFragment extends Fragment {
 
     private void initView(View view) {
         tvCity = view.findViewById(R.id.tv_city);
+        tvTemperature = view.findViewById(R.id.tv_temperature);
+        tvCondition = view.findViewById(R.id.tv_condition);
+        tvFeelingTemperature = view.findViewById(R.id.tv_feeling_temperature);
+        ivWeatherIcon = view.findViewById(R.id.iv_weather_icon);
         bExtra = view.findViewById(R.id.iv_extra);
         rvDailyWeather = view.findViewById(R.id.rv_week_weather);
     }
