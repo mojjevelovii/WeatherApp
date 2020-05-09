@@ -1,28 +1,76 @@
 package ru.shumilova.weatherapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import ru.shumilova.weatherapp.city_selection_screen.CitySelectionFragment;
+import ru.shumilova.weatherapp.data.LocalRepository;
+import ru.shumilova.weatherapp.info_screen.InfoFragment;
 import ru.shumilova.weatherapp.main_screen.MainFragment;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
 import ru.shumilova.weatherapp.preferences_screen.PreferencesFragment;
 
 public class MainActivity extends AppCompatActivity implements Navigable {
+    private BottomNavigationView bnvNavigation;
+    LocalRepository localRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initTheme();
         setContentView(R.layout.activity_main);
+        initNavigation();
 
         if (savedInstanceState == null) {
             navigateTo(FragmentType.MAIN, null, true);
         }
 
+    }
+
+    private void initTheme() {
+        localRepository = new LocalRepository(this);
+        int themeResource;
+
+        if (localRepository.isDarkTheme()) {
+            themeResource = R.style.DarkAppTheme;
+        } else {
+            themeResource = R.style.LightAppTheme;
+        }
+        setTheme(themeResource);
+    }
+
+    private void initNavigation() {
+        bnvNavigation = findViewById(R.id.bn_navigation);
+        bnvNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        navigateTo(FragmentType.MAIN, null, true);
+                        break;
+                    case R.id.navigation_info:
+                        navigateTo(FragmentType.INFO, null, true);
+                        break;
+                    case R.id.navigation_settings:
+                        navigateTo(FragmentType.PREFERENCES, null, true);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unknown menu item!");
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -34,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements Navigable {
             Fragment fragment = fragmentManager.findFragmentByTag(fragmentType.name());
             if (fragment != null) {
                 fragment.setArguments(bundle);
-                fragmentManager.popBackStackImmediate(fragmentType.name(),0);
+                fragmentManager.popBackStackImmediate(fragmentType.name(), 0);
                 isNeedNewInstance = false;
             }
         }
@@ -63,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements Navigable {
             case CITY_SELECTION:
                 fragment = CitySelectionFragment.newInstance(bundle);
                 break;
+            case INFO:
+                fragment = InfoFragment.newInstance(bundle);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown fragment type!");
         }
@@ -72,9 +123,15 @@ public class MainActivity extends AppCompatActivity implements Navigable {
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() > 1)
+        if (fm.getBackStackEntryCount() > 1) {
             super.onBackPressed();
-        else
-            finish();
+        } else {
+            Snackbar.make(bnvNavigation, R.string.exit_or_not, Snackbar.LENGTH_INDEFINITE).setAction(R.string.yes_exit, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            }).show();
+        }
     }
 }

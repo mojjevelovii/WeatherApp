@@ -4,25 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/base_margins"
-    tools:background="@color/background">
+    android:background="?attr/item_background"
+    android:padding="@dimen/base_margins">
 
     <TextView
         android:id="@+id/tv_daily_weather_date"
+        style="@style/WeatherItemLayoutHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/base_margins"
-        android:textColor="@color/text_color"
-        android:textSize="@dimen/small_font_size"
         app:layout_constraintStart_toEndOf="@id/iv_windy"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="27.04.2020" />
 
     <TextView
         android:id="@+id/tv_day_of_week_weather"
+        style="@style/WeatherItemLayoutDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_color"
         android:textSize="@dimen/small_font_size"
         app:layout_constraintStart_toStartOf="@id/tv_daily_weather_date"
         app:layout_constraintTop_toBottomOf="@id/tv_daily_weather_date"
@@ -38,10 +37,10 @@
 
     <TextView
         android:id="@+id/tv_daily_weather_t"
+        style="@style/WeatherItemLayoutTemperature"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:textColor="@color/text_color"
         android:textSize="@dimen/medium_font_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

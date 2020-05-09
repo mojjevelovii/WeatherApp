@@ -4,48 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="?attr/main_background"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tv_city_selection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/base_margins"
-        android:text="@string/city_selection"
-        android:textAlignment="center"
-        android:textColor="@color/text_color"
-        android:textSize="@dimen/medium_font_size"
-        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="?attr/main_background"
+        android:elevation="10dp"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/base_margins">
 
-        <EditText
-            android:id="@+id/et_city_search"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/base_margins"
-            android:layout_weight="1"
-            android:autofillHints=""
-            android:backgroundTint="@color/text_color"
-            android:hint="@string/prompt_text"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/small_font_size"
-            tools:ignore="LabelFor" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_search"
+        <TextView
+            android:id="@+id/tv_city_selection"
+            style="@style/MainHeaderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/base_margins"
-            app:srcCompat="@drawable/ic_search" />
+            android:layout_margin="@dimen/base_margins"
+            android:text="@string/city_selection" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_city_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/base_margins"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:backgroundTint="?attr/iconColor"
+                android:hint="@string/prompt_text"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColor="?attr/weather_item_layout_text_Color"
+                android:textSize="@dimen/small_font_size"
+                tools:ignore="LabelFor" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/base_margins"
+                app:srcCompat="@drawable/ic_search" />
+
+
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -53,6 +61,6 @@
         android:id="@+id/rv_city_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/base_margins"
-        tools:listitem="@layout/citylist_item_layout"/>
+        android:background="?attr/item_background"
+        tools:listitem="@layout/citylist_item_layout" />
 </LinearLayout>
