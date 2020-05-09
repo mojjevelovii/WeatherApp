@@ -30,10 +30,6 @@
         <item name="item_separator">@color/pistachio</item>
     </style>
 
-    <style name="MySwitch" parent="Widget.AppCompat.CompoundButton.Switch">
-        <item name="trackTint">@color/color_light</item>
-    </style>
-
     <style name="WeatherItemLayoutHeader" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">?attr/weather_item_layout_text_Color</item>
         <item name="android:textStyle">bold</item>
