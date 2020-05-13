@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -44,6 +46,9 @@ public class MainFragment extends Fragment {
     private AppCompatImageView bExtra;
     private RecyclerView rvDailyWeather;
     private Navigable navigator;
+    private LinearLayout llMainContainer;
+    private ProgressBar pbLoader;
+    private ProgressBar pbLoaderRV;
 
 
     public static MainFragment newInstance(Bundle bundle) {
@@ -87,11 +92,12 @@ public class MainFragment extends Fragment {
                     DailyWeatherAdapter adapter = (DailyWeatherAdapter) rvDailyWeather.getAdapter();
                     if (adapter != null) {
                         adapter.setDailyWeatherDataSource(weatherState.getWeatherWeeklyResponse().getList());
+
+                        pbLoaderRV.setVisibility(View.GONE);
                     }
                 }
             }
         });
-
 
         initView(view);
         initButtons();
@@ -109,10 +115,6 @@ public class MainFragment extends Fragment {
             wr.getWeatherWeek("Moscow,RU");
         }
         onRestoreState(savedInstanceState);
-
-
-
-
     }
 
     private void showError(WeatherState weatherState) {
@@ -143,6 +145,9 @@ public class MainFragment extends Fragment {
         tvCity.setText(weatherResponse.getName());
 
         ivWeatherIcon.setImageResource(weatherResponse.getWeather().get(0).getIcon().getIconRes());
+
+        pbLoader.setVisibility(View.GONE);
+        llMainContainer.setVisibility(View.VISIBLE);
     }
 
     private String formatTemperature(int intFeelsTemperature) {
@@ -212,6 +217,9 @@ public class MainFragment extends Fragment {
         ivWeatherIcon = view.findViewById(R.id.iv_weather_icon);
         bExtra = view.findViewById(R.id.iv_extra);
         rvDailyWeather = view.findViewById(R.id.rv_week_weather);
+        pbLoader = view.findViewById(R.id.pb_loader);
+        llMainContainer = view.findViewById(R.id.ll_main_container);
+        pbLoaderRV = view.findViewById(R.id.pb_loader_rv);
     }
 
 }
