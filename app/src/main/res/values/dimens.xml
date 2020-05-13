@@ -6,5 +6,6 @@
     <dimen name="small_font_size">20sp</dimen>
     <dimen name="base_margins">16dp</dimen>
     <dimen name="half_margin">8dp</dimen>
+    <dimen name="progress_bar_size">100dp</dimen>
 
 </resources>

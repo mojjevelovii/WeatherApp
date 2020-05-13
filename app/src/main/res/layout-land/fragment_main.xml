@@ -15,10 +15,13 @@
         android:elevation="10dp">
 
         <LinearLayout
+            android:id="@+id/ll_main_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="invisible"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,14 +109,33 @@
                     android:text="@string/feeling_temperature" />
             </LinearLayout>
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_loader"
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_week_weather"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        tools:listitem="@layout/weather_item_layout" />
+        android:background="?attr/item_background">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_week_weather"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/weather_item_layout" />
+
+        <ProgressBar
+            android:id="@+id/pb_loader_rv"
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+    </FrameLayout>
 
 </LinearLayout>
