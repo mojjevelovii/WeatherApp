@@ -124,11 +124,17 @@
         android:layout_weight="1"
         android:background="?attr/item_background">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_week_weather"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srl_week_weather"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/weather_item_layout" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_week_weather"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/weather_item_layout" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <ProgressBar
             android:id="@+id/pb_loader_rv"

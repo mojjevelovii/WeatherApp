@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,8 @@ public class MainFragment extends Fragment {
     private static final String YANDEX_URL = "https://yandex.ru/pogoda/";
     private static final String PARAMS = MainFragment.class.getName() + "PARAMS";
 
+    private WeatherRepository wr = new WeatherRepository();
+
     private TextView tvCity;
     private TextView tvTemperature;
     private TextView tvCondition;
@@ -49,7 +52,7 @@ public class MainFragment extends Fragment {
     private LinearLayout llMainContainer;
     private ProgressBar pbLoader;
     private ProgressBar pbLoaderRV;
-
+    private SwipeRefreshLayout srlWeekWeather;
 
     public static MainFragment newInstance(Bundle bundle) {
         MainFragment fragment = new MainFragment();
@@ -80,7 +83,6 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        WeatherRepository wr = new WeatherRepository();
         wr.getWeatherData().observe(getViewLifecycleOwner(), new Observer<WeatherState>() {
             @Override
             public void onChanged(WeatherState weatherState) {
@@ -94,6 +96,8 @@ public class MainFragment extends Fragment {
                         adapter.setDailyWeatherDataSource(weatherState.getWeatherWeeklyResponse().getList());
 
                         pbLoaderRV.setVisibility(View.GONE);
+
+                        srlWeekWeather.setRefreshing(false);
                     }
                 }
             }
@@ -207,6 +211,14 @@ public class MainFragment extends Fragment {
                 startActivity(browser);
             }
         });
+
+        srlWeekWeather.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                wr.getCityWeather(tvCity.getText().toString());
+                wr.getWeatherWeek(tvCity.getText().toString());
+            }
+        });
     }
 
     private void initView(View view) {
@@ -220,6 +232,7 @@ public class MainFragment extends Fragment {
         pbLoader = view.findViewById(R.id.pb_loader);
         llMainContainer = view.findViewById(R.id.ll_main_container);
         pbLoaderRV = view.findViewById(R.id.pb_loader_rv);
+        srlWeekWeather = view.findViewById(R.id.srl_week_weather);
     }
 
 }
