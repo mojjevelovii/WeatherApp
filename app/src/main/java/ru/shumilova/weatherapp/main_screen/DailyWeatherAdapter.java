@@ -10,18 +10,24 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import ru.shumilova.weatherapp.R;
-import ru.shumilova.weatherapp.domain.WeatherData;
+import ru.shumilova.weatherapp.data.models.WeatherResponse;
 
 public class DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapter.ViewHolder> {
 
-    private List<WeatherData> dailyWeatherDataSource;
+    private List<WeatherResponse> dailyWeatherDataSource;
 
-    public DailyWeatherAdapter(List<WeatherData> dailyWeatherDataSource) {
+    public void setDailyWeatherDataSource(List<WeatherResponse> dailyWeatherDataSource) {
         this.dailyWeatherDataSource = dailyWeatherDataSource;
+        notifyDataSetChanged();
+    }
+
+    public DailyWeatherAdapter() {
+        this.dailyWeatherDataSource = new ArrayList<WeatherResponse>();
     }
 
     @NonNull
@@ -56,19 +62,20 @@ public class DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapte
             ivWindy = itemView.findViewById(R.id.iv_windy);
         }
 
-        public void bind(WeatherData weatherData) {
+        public void bind(WeatherResponse weatherData) {
             bindTemperature(weatherData);
             bindIcon(weatherData);
             bindDate(weatherData);
         }
 
-        private void bindTemperature(WeatherData weatherData) {
+        private void bindTemperature(WeatherResponse weatherData) {
             String temperature;
 
-            if (weatherData.getTemperature() > 0) {
-                temperature = "+" + weatherData.getTemperature() + "°";
-            } else if (weatherData.getTemperature() < 0) {
-                temperature = weatherData.getTemperature() + "°";
+            int intTemperature = (int) weatherData.getMain().getTemp();
+            if (intTemperature > 0) {
+                temperature = "+" + intTemperature + "°";
+            } else if (intTemperature < 0) {
+                temperature = intTemperature + "°";
             } else {
                 temperature = "0°";
             }
@@ -76,31 +83,16 @@ public class DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapte
             tvDailyWeatherTemperature.setText(temperature);
         }
 
-        private void bindIcon(WeatherData weatherData) {
-            int icon;
-            switch (weatherData.getWeatherCondition()) {
-                case RAINY:
-                    icon = R.drawable.ic_summer_rain;
-                    break;
-                case SUNNY:
-                    icon = R.drawable.ic_sunny;
-                    break;
-                case CLOUDY:
-                    icon = R.drawable.ic_clouds;
-                    break;
-                default:
-                    icon = R.drawable.ic_stars_2;
-                    break;
-            }
-
-            ivWindy.setImageResource(icon);
+        private void bindIcon(WeatherResponse weatherData) {
+            ivWindy.setImageResource(weatherData.getWeather().get(0).getIcon().getIconRes());
         }
 
-        private void bindDate(WeatherData weatherData) {
+        private void bindDate(WeatherResponse weatherData) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-            String date = simpleDateFormat.format(weatherData.getDate());
+            long time = weatherData.getDt() * 1000;
+            String date = simpleDateFormat.format(time);
             simpleDateFormat.applyPattern("EEEE");
-            String dayOfWeek = simpleDateFormat.format(weatherData.getDate());
+            String dayOfWeek = simpleDateFormat.format(time);
             tvDayOfWeekWeather.setText(dayOfWeek);
             tvDailyWeatherDate.setText(date);
         }

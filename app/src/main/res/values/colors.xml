@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#7CB342</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="background">#1B1727</color>
     <color name="text_color">#FFF8E1</color>
-    <color name="accent_color">#EC4F88</color>
     <color name="color_light">#928779</color>
     <color name="peach">#FCDEBE</color>
     <color name="pistachio">#E3E090</color>

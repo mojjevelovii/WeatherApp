@@ -58,6 +58,6 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
     }
 
     public interface OnCitySelectListener {
-        public void onCitySelect(String cityName);
+        void onCitySelect(String cityName);
     }
 }
