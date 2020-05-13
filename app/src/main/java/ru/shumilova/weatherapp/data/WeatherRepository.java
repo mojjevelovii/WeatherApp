@@ -1,7 +1,6 @@
 package ru.shumilova.weatherapp.data;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import ru.shumilova.weatherapp.BuildConfig;
 import ru.shumilova.weatherapp.data.models.ErrorType;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 import ru.shumilova.weatherapp.data.models.WeatherWeeklyResponse;
@@ -41,82 +41,67 @@ public class WeatherRepository {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                String result;
                 String urlString = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=metric" + "&lang=" + Locale.getDefault().getLanguage();
 
-                HttpURLConnection urlConnection = null;
-                URL url;
-
-                try {
-                    url = new URL(urlString);
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.addRequestProperty("x-api-key", "cfdb77e65d320ca11996d5fee7f947bd");
-                    urlConnection.setReadTimeout(10000);
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    String result = getLines(in);
+                result = getWeather(urlString);
+                if (result != null) {
                     WeatherResponse weatherResponse = gson.fromJson(result, WeatherResponse.class);
                     weatherMutableData.postValue(new WeatherState(weatherResponse, null, null));
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    ErrorType errorType;
-                    if (e instanceof FileNotFoundException) {
-                        errorType = ErrorType.CITY_NOT_FOUND;
-                    } else {
-                        errorType = ErrorType.CONNECTION_ERROR;
-                    }
-                    weatherMutableData.postValue(new WeatherState(null,null, errorType));
-                } finally {
-                    if (urlConnection != null) {
-                        urlConnection.disconnect();
-                    }
                 }
             }
 
         }).start();
-
-
     }
 
-    public void getWeatherWeek (final String cityName) {
+    private String getWeather(String urlString) {
+        HttpURLConnection urlConnection = null;
+        URL url;
+
+        try {
+            url = new URL(urlString);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.addRequestProperty("x-api-key", BuildConfig.WEATHER_API);
+            urlConnection.setReadTimeout(10000);
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            return getLines(in);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ErrorType errorType;
+
+            if (e instanceof FileNotFoundException) {
+                errorType = ErrorType.CITY_NOT_FOUND;
+            } else {
+                errorType = ErrorType.CONNECTION_ERROR;
+            }
+            weatherMutableData.postValue(new WeatherState(null, null, errorType));
+            return null;
+
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+    }
+
+    public void getWeatherWeek(final String cityName) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                String result;
                 String urlString = "https://api.openweathermap.org/data/2.5/forecast/?q=" + cityName + "&units=metric" + "&lang=" + Locale.getDefault().getLanguage();
 
-                HttpURLConnection urlConnection = null;
-                URL url;
-
-                try {
-                    url = new URL(urlString);
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.addRequestProperty("x-api-key", "cfdb77e65d320ca11996d5fee7f947bd");
-                    urlConnection.setReadTimeout(10000);
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    String result = getLines(in);
+                result = getWeather(urlString);
+                if (result != null) {
                     WeatherWeeklyResponse weatherWeeklyResponse = gson.fromJson(result, WeatherWeeklyResponse.class);
                     List<WeatherResponse> filteredList = filterDailyWeather(weatherWeeklyResponse);
                     weatherWeeklyResponse.setList(filteredList);
                     weatherMutableData.postValue(new WeatherState(null, weatherWeeklyResponse, null));
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    ErrorType errorType;
-                    if (e instanceof FileNotFoundException) {
-                        errorType = ErrorType.CITY_NOT_FOUND;
-                    } else {
-                        errorType = ErrorType.CONNECTION_ERROR;
-                    }
-                    weatherMutableData.postValue(new WeatherState(null,null, errorType));
-                } finally {
-                    if (urlConnection != null) {
-                        urlConnection.disconnect();
-                    }
                 }
             }
 
         }).start();
-
-
     }
 
     private List<WeatherResponse> filterDailyWeather(WeatherWeeklyResponse weatherWeeklyResponse) {
@@ -137,6 +122,5 @@ public class WeatherRepository {
     private String getLines(BufferedReader in) {
         return in.lines().collect(Collectors.joining("\n"));
     }
-
 
 }

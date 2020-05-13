@@ -12,6 +12,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def props = new Properties()
+        file("../properties/weather.properties").withReader {
+            props.load(it)
+            buildConfigField("String", "WEATHER_API", props.getProperty("WEATHER_API"))
+        }
     }
 
     buildTypes {
