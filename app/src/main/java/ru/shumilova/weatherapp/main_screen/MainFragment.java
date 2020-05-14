@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 
+import ru.shumilova.weatherapp.data.LocalRepository;
 import ru.shumilova.weatherapp.data.WeatherRepository;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 import ru.shumilova.weatherapp.domain.WeatherState;
@@ -36,6 +37,7 @@ import ru.shumilova.weatherapp.R;
 public class MainFragment extends Fragment {
 
     private static final String CITY_NAME_KEY = "CITY_NAME_KEY";
+    private static final String PREVIOUS_CITY_NAME_KEY = "PREVIOUS_CITY_NAME_KEY";
     private static final String YANDEX_URL = "https://yandex.ru/pogoda/";
     private static final String PARAMS = MainFragment.class.getName() + "PARAMS";
 
@@ -53,6 +55,8 @@ public class MainFragment extends Fragment {
     private ProgressBar pbLoader;
     private ProgressBar pbLoaderRV;
     private SwipeRefreshLayout srlWeekWeather;
+    private LocalRepository localRepository;
+    private String previousCity;
 
     public static MainFragment newInstance(Bundle bundle) {
         MainFragment fragment = new MainFragment();
@@ -83,11 +87,16 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        localRepository = new LocalRepository(getContext());
+
         wr.getWeatherData().observe(getViewLifecycleOwner(), new Observer<WeatherState>() {
             @Override
             public void onChanged(WeatherState weatherState) {
                 if (weatherState.getErrorType() != null) {
                     showError(weatherState);
+                    wr.getCityWeather(previousCity);
+                    wr.getWeatherWeek(previousCity);
+
                 } else if (weatherState.getWeatherResponse() != null) {
                     renderWeather(weatherState.getWeatherResponse());
                 } else if (weatherState.getWeatherWeeklyResponse() != null) {
@@ -115,8 +124,9 @@ public class MainFragment extends Fragment {
                 wr.getWeatherWeek(city);
             }
         } else {
-            wr.getCityWeather("Moscow,RU");
-            wr.getWeatherWeek("Moscow,RU");
+            String cityName = localRepository.getSelectedCity();
+            wr.getCityWeather(cityName);
+            wr.getWeatherWeek(cityName);
         }
         onRestoreState(savedInstanceState);
     }
@@ -147,6 +157,8 @@ public class MainFragment extends Fragment {
 
         tvCondition.setText(weatherResponse.getWeather().get(0).getDescription());
         tvCity.setText(weatherResponse.getName());
+
+        previousCity = weatherResponse.getName();
 
         ivWeatherIcon.setImageResource(weatherResponse.getWeather().get(0).getIcon().getIconRes());
 
@@ -183,13 +195,17 @@ public class MainFragment extends Fragment {
         super.onSaveInstanceState(outState);
         if (tvCity != null) {
             outState.putString(CITY_NAME_KEY, tvCity.getText().toString());
+            localRepository.saveSelectedCity(tvCity.getText().toString());
+            outState.putString(PREVIOUS_CITY_NAME_KEY, previousCity);
         }
     }
+
 
     private void onRestoreState(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (savedInstanceState.getString(CITY_NAME_KEY) != null) {
                 tvCity.setText(savedInstanceState.getString(CITY_NAME_KEY));
+                previousCity = savedInstanceState.getString(PREVIOUS_CITY_NAME_KEY);
             }
         }
     }
