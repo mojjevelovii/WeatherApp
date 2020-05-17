@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 import ru.shumilova.weatherapp.data.LocalRepository;
 import ru.shumilova.weatherapp.data.WeatherRepository;
+import ru.shumilova.weatherapp.data.models.ErrorType;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 import ru.shumilova.weatherapp.domain.WeatherState;
 import ru.shumilova.weatherapp.navigation.FragmentType;
@@ -57,6 +58,7 @@ public class MainFragment extends Fragment {
     private SwipeRefreshLayout srlWeekWeather;
     private LocalRepository localRepository;
     private String previousCity;
+    private AlertDialog errorDialog;
 
     public static MainFragment newInstance(Bundle bundle) {
         MainFragment fragment = new MainFragment();
@@ -94,9 +96,10 @@ public class MainFragment extends Fragment {
             public void onChanged(WeatherState weatherState) {
                 if (weatherState.getErrorType() != null) {
                     showError(weatherState);
-                    wr.getCityWeather(previousCity);
-                    wr.getWeatherWeek(previousCity);
-
+                    if (weatherState.getErrorType() == ErrorType.CITY_NOT_FOUND) {
+                        wr.getCityWeather(previousCity);
+                        wr.getWeatherWeek(previousCity);
+                    }
                 } else if (weatherState.getWeatherResponse() != null) {
                     localRepository.saveCity(weatherState.getWeatherResponse());
                     renderWeather(weatherState.getWeatherResponse());
@@ -133,15 +136,18 @@ public class MainFragment extends Fragment {
     }
 
     private void showError(WeatherState weatherState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(weatherState.getErrorType().getErrorMsg());
-        builder.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
+        if (errorDialog == null || !errorDialog.isShowing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setMessage(weatherState.getErrorType().getErrorMsg());
+            builder.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            errorDialog = builder.create();
+            errorDialog.show();
+        }
     }
 
     private void renderWeather(WeatherResponse weatherResponse) {

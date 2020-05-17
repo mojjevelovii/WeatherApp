@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/base_margins"
-                app:srcCompat="@drawable/ic_search" />
+                app:srcCompat="@drawable/ic_send" />
 
 
         </LinearLayout>
