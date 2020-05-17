@@ -34,7 +34,7 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
         cachedCityNames.forEach(new Consumer<WeatherResponse>() {
             @Override
             public void accept(WeatherResponse weatherResponse) {
-                if (weatherResponse.getName().contains(query)) {
+                if (weatherResponse.getName().toLowerCase().contains(query.toLowerCase())) {
                     filteredList.add(weatherResponse);
                 }
             }
