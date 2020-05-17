@@ -5,13 +5,19 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -46,7 +52,7 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_city_selection, container, false);
     }
 
@@ -54,11 +60,11 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         localRepository = new LocalRepository(getContext());
-
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar((Toolbar) view.findViewById(R.id.city_selection_toolbar));
         initView(view);
         initButtons();
         initRecyclerView();
-
     }
 
     private void initRecyclerView() {
@@ -97,5 +103,27 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
     @Override
     public void onCitySelect(String cityName) {
         navigateToMain(cityName);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.city_selection_toolbar_menu, menu);
+        MenuItem search = menu.findItem(R.id.item_action_search);
+        final SearchView searchCity = (SearchView) search.getActionView();
+        searchCity.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                ((CityListAdapter) rvCityList.getAdapter()).filterCity(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ((CityListAdapter) rvCityList.getAdapter()).filterCity(newText);
+                return true;
+            }
+
+        });
     }
 }

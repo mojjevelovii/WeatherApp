@@ -10,19 +10,42 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import ru.shumilova.weatherapp.R;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 
 public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHolder> {
     private List<WeatherResponse> cityNames;
+    private List<WeatherResponse> cachedCityNames;
     private OnCitySelectListener listener;
 
     public CityListAdapter(List<WeatherResponse> cityNames, OnCitySelectListener listener) {
         this.cityNames = cityNames;
+        this.cachedCityNames = cityNames;
         this.listener = listener;
+    }
+
+    public void filterCity(final String query) {
+        final List<WeatherResponse> filteredList = new ArrayList<>();
+        cachedCityNames.forEach(new Consumer<WeatherResponse>() {
+            @Override
+            public void accept(WeatherResponse weatherResponse) {
+                if (weatherResponse.getName().contains(query)) {
+                    filteredList.add(weatherResponse);
+                }
+            }
+        });
+        cityNames = filteredList;
+        notifyDataSetChanged();
+    }
+
+    public void resetFilter() {
+        cityNames = cachedCityNames;
+        notifyDataSetChanged();
     }
 
     @NonNull
