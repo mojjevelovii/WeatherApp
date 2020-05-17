@@ -78,7 +78,6 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
         ivSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                localRepository.saveCity(etCitySearch.getText().toString());
                 navigateToMain(etCitySearch.getText().toString());
             }
         });

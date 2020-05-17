@@ -98,6 +98,7 @@ public class MainFragment extends Fragment {
                     wr.getWeatherWeek(previousCity);
 
                 } else if (weatherState.getWeatherResponse() != null) {
+                    localRepository.saveCity(weatherState.getWeatherResponse());
                     renderWeather(weatherState.getWeatherResponse());
                 } else if (weatherState.getWeatherWeeklyResponse() != null) {
                     DailyWeatherAdapter adapter = (DailyWeatherAdapter) rvDailyWeather.getAdapter();

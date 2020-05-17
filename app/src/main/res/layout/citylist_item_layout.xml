@@ -1,10 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_city_name"
-    style="@style/MainConditionText"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="?attr/item_background"
     android:padding="@dimen/base_margins">
 
-</TextView>
+    <TextView
+        android:id="@+id/tv_city_name"
+        style="@style/WeatherItemLayoutHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/base_margins"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toStartOf="@id/iv_temperature"
+        app:layout_constraintStart_toEndOf="@id/iv_windy"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Smolenskaya oblast'" />
+
+    <TextView
+        android:id="@+id/tv_day_of_city_weather"
+        style="@style/WeatherItemLayoutDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small_font_size"
+        app:layout_constraintStart_toStartOf="@id/tv_city_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_city_name"
+        tools:text="17.05.2020" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/tv_daily_weather_t"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_temperature_1" />
+
+    <TextView
+        android:id="@+id/tv_daily_weather_t"
+        style="@style/WeatherItemLayoutTemperature"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textSize="@dimen/medium_font_size"
+        app:layout_constraintBottom_toBottomOf="@id/iv_temperature"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_temperature"
+        tools:text="+31°" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_windy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/base_margins"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_windy" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

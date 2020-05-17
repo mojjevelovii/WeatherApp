@@ -52,14 +52,14 @@ public class DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapte
         private TextView tvDailyWeatherDate;
         private TextView tvDayOfWeekWeather;
         private TextView tvDailyWeatherTemperature;
-        private AppCompatImageView ivWindy;
+        private AppCompatImageView weatherIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDailyWeatherDate = itemView.findViewById(R.id.tv_daily_weather_date);
             tvDayOfWeekWeather = itemView.findViewById(R.id.tv_day_of_week_weather);
             tvDailyWeatherTemperature = itemView.findViewById(R.id.tv_daily_weather_t);
-            ivWindy = itemView.findViewById(R.id.iv_windy);
+            weatherIcon = itemView.findViewById(R.id.iv_windy);
         }
 
         public void bind(WeatherResponse weatherData) {
@@ -84,7 +84,7 @@ public class DailyWeatherAdapter extends RecyclerView.Adapter<DailyWeatherAdapte
         }
 
         private void bindIcon(WeatherResponse weatherData) {
-            ivWindy.setImageResource(weatherData.getWeather().get(0).getIcon().getIconRes());
+            weatherIcon.setImageResource(weatherData.getWeather().get(0).getIcon().getIconRes());
         }
 
         private void bindDate(WeatherResponse weatherData) {

@@ -3,48 +3,59 @@ package ru.shumilova.weatherapp.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import ru.shumilova.weatherapp.main_screen.MainFragment;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import ru.shumilova.weatherapp.data.models.WeatherResponse;
 
 public class LocalRepository {
     private SharedPreferences sharedPreferences;
-    private Set<String> citySet = new HashSet<>();
+    private Map<String, WeatherResponse> cityMap = new HashMap<>();
     private static final String SELECTED_CITY = "SELECTED_CITY";
     private static final String LOCAL_REPOSITORY = "LOCAL_REPOSITORY";
     private static final String CITIES = "CITIES";
     private static final String DARK_THEME = "DARK_THEME";
 
+    private Gson gson = new Gson();
+
 
     public LocalRepository(Context context) {
         this.sharedPreferences = context.getSharedPreferences(LOCAL_REPOSITORY, Context.MODE_PRIVATE);
+        restoreCityHistory();
     }
 
-    public void saveCity(String cityName) {
-        SharedPreferences.Editor spEditor = sharedPreferences.edit();
-        citySet.add(cityName);
-        StringBuilder sb = new StringBuilder();
-        for (Object o : citySet.toArray()) {
-            sb.append((String) o).append(";");
+    private void restoreCityHistory() {
+        String cities = sharedPreferences.getString(CITIES, null);
+        if (cities != null) {
+            Type cityMapType = new TypeToken<Map<String, WeatherResponse>>() {
+            }.getType();
+            cityMap = gson.fromJson(cities, cityMapType);
+        } else {
+            cityMap = new HashMap<>();
         }
-        spEditor.putString(CITIES, sb.toString());
+    }
+
+    public void saveCity(WeatherResponse weatherResponse) {
+        SharedPreferences.Editor spEditor = sharedPreferences.edit();
+        cityMap.put(weatherResponse.getName(), weatherResponse);
+        String json = gson.toJson(cityMap);
+
+        spEditor.putString(CITIES, json);
         spEditor.apply();
     }
 
-    public List<String> loadCityList() {
-        String cities = sharedPreferences.getString(CITIES, null);
-        if (cities != null) {
-            List<String> cityList = Arrays.asList(cities.split(";"));
-            citySet = new HashSet<>(cityList);
-            return cityList;
-        } else {
-            citySet = new HashSet<>();
-            return new ArrayList<>();
+    public List<WeatherResponse> loadCityList() {
+        List<WeatherResponse> cityList = new ArrayList<>();
+        for (Map.Entry<String, WeatherResponse> e : cityMap.entrySet()) {
+            cityList.add(e.getValue());
         }
+        return cityList;
     }
 
     public boolean isDarkTheme() {

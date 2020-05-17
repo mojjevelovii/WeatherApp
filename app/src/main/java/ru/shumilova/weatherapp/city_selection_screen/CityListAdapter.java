@@ -6,17 +6,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import ru.shumilova.weatherapp.R;
+import ru.shumilova.weatherapp.data.models.WeatherResponse;
 
 public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHolder> {
-    private List<String> cityNames;
+    private List<WeatherResponse> cityNames;
     private OnCitySelectListener listener;
 
-    public CityListAdapter(List<String> cityNames, OnCitySelectListener listener) {
+    public CityListAdapter(List<WeatherResponse> cityNames, OnCitySelectListener listener) {
         this.cityNames = cityNames;
         this.listener = listener;
     }
@@ -39,11 +43,19 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView cityName;
+        private TextView cityName;
+        private TextView cityDate;
+        private TextView cityTemperature;
+        private AppCompatImageView weatherIcon;
+
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             cityName = itemView.findViewById(R.id.tv_city_name);
+            cityDate = itemView.findViewById(R.id.tv_day_of_city_weather);
+            cityTemperature = itemView.findViewById(R.id.tv_daily_weather_t);
+            weatherIcon = itemView.findViewById(R.id.iv_windy);
+
             cityName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -52,8 +64,41 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
             });
         }
 
-        void bind(String cityName) {
-            this.cityName.setText(cityName);
+        void bind(WeatherResponse weatherResponse) {
+            bindCityName(weatherResponse.getName());
+            bindDate(weatherResponse);
+            bindTemperature(weatherResponse);
+            bindIcon(weatherResponse);
+        }
+
+        private void bindCityName(String name) {
+            this.cityName.setText(name);
+        }
+
+        private void bindDate(WeatherResponse weatherData) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+            long time = weatherData.getDt() * 1000;
+            String date = simpleDateFormat.format(time);
+            cityDate.setText(date);
+        }
+
+        private void bindTemperature(WeatherResponse weatherData) {
+            String temperature;
+
+            int intTemperature = (int) weatherData.getMain().getTemp();
+            if (intTemperature > 0) {
+                temperature = "+" + intTemperature + "°";
+            } else if (intTemperature < 0) {
+                temperature = intTemperature + "°";
+            } else {
+                temperature = "0°";
+            }
+
+            cityTemperature.setText(temperature);
+        }
+
+        private void bindIcon(WeatherResponse weatherData) {
+            weatherIcon.setImageResource(weatherData.getWeather().get(0).getIcon().getIconRes());
         }
     }
 
