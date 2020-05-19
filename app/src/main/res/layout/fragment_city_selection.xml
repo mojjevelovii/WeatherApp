@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,14 +16,13 @@
         android:orientation="vertical"
         android:paddingBottom="@dimen/base_margins">
 
-        <TextView
-            android:id="@+id/tv_city_selection"
-            style="@style/MainHeaderText"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/city_selection_toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/base_margins"
-            android:text="@string/city_selection" />
+            app:menu="@menu/city_selection_toolbar_menu"
+            app:title="@string/city_selection"
+            app:titleTextAppearance="@style/MainHeaderText" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,9 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/base_margins"
-                app:srcCompat="@drawable/ic_search" />
-
-
+                app:srcCompat="@drawable/ic_send" />
         </LinearLayout>
     </LinearLayout>
 

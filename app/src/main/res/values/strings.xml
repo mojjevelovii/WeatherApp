@@ -22,5 +22,6 @@
     <string name="error_msg_city_not_found">City not found</string>
     <string name="error_msg_no_connection">No connection</string>
     <string name="common_ok" translatable="false">OK</string>
+    <string name="search">Search</string>
 
 </resources>
