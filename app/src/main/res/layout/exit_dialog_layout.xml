@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/main_background"
+    android:orientation="horizontal">
+
+    <TextView
+        style="@style/MainHeaderText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margins"
+        android:layout_weight="1"
+        android:text="@string/exit_or_not"
+        android:textAlignment="textStart" />
+
+    <TextView
+        android:id="@+id/tv_yes_exit"
+        style="@style/MainHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margins"
+        android:text="@string/yes_exit" />
+
+    <TextView
+        android:id="@+id/tv_no_exit"
+        style="@style/MainHeaderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margins"
+        android:text="@string/no" />
+
+
+</LinearLayout>

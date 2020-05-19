@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import ru.shumilova.weatherapp.city_selection_screen.CitySelectionFragment;
@@ -126,12 +127,26 @@ public class MainActivity extends AppCompatActivity implements Navigable {
         if (fm.getBackStackEntryCount() > 1) {
             super.onBackPressed();
         } else {
-            Snackbar.make(bnvNavigation, R.string.exit_or_not, Snackbar.LENGTH_INDEFINITE).setAction(R.string.yes_exit, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            }).show();
+            showExitDialog();
         }
+    }
+
+    private void showExitDialog() {
+        final BottomSheetDialog exitDialog = new BottomSheetDialog(this);
+        exitDialog.setContentView(R.layout.exit_dialog_layout);
+        exitDialog.findViewById(R.id.tv_yes_exit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        exitDialog.findViewById(R.id.tv_no_exit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exitDialog.cancel();
+            }
+        });
+        exitDialog.show();
     }
 }
