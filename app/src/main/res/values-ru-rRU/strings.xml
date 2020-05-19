@@ -22,4 +22,5 @@
     <string name="error_msg_no_connection">Не удалось подключиться к серверу</string>
     <string name="search">Поиск</string>
     <string name="no">Нет</string>
+    <string name="custom_text">Это мой кастомный textView для примера.</string>
 </resources>
