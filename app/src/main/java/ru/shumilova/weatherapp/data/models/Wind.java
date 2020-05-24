@@ -3,7 +3,9 @@ package ru.shumilova.weatherapp.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Wind {
+import java.io.Serializable;
+
+public class Wind implements Serializable {
 
     @SerializedName("speed")
     @Expose

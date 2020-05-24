@@ -1,10 +1,12 @@
 package ru.shumilova.weatherapp.domain;
 
+import java.io.Serializable;
+
 import ru.shumilova.weatherapp.data.models.ErrorType;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 import ru.shumilova.weatherapp.data.models.WeatherWeeklyResponse;
 
-public class WeatherState {
+public class WeatherState implements Serializable {
     private WeatherResponse weatherResponse;
     private WeatherWeeklyResponse weatherWeeklyResponse;
     private ErrorType errorType;

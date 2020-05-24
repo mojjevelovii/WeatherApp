@@ -8,10 +8,4 @@
     <attr name="navigation_default" format="color" />
     <attr name="item_background" format="color" />
     <attr name="item_separator" format="color" />
-
-    <declare-styleable name="MyTemperatureView">
-        <attr name="text_color" format="color" />
-        <attr name="text" format="string" />
-    </declare-styleable>
-
 </resources>

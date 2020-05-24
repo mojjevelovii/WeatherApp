@@ -2,9 +2,11 @@ package ru.shumilova.weatherapp.data.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import ru.shumilova.weatherapp.R;
 
-public enum IconType {
+public enum IconType implements Serializable {
 
     @SerializedName("01d")
     SUNNY_DAY(R.drawable.ic_sunny),

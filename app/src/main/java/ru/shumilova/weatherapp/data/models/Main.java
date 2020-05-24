@@ -3,7 +3,9 @@ package ru.shumilova.weatherapp.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Main {
+import java.io.Serializable;
+
+public class Main implements Serializable {
 
     @SerializedName("temp")
     @Expose

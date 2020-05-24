@@ -1,9 +1,14 @@
 package ru.shumilova.weatherapp.main_screen;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -11,12 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,13 +32,16 @@ import android.widget.TextView;
 import java.io.Serializable;
 
 import ru.shumilova.weatherapp.data.LocalRepository;
-import ru.shumilova.weatherapp.data.WeatherRepository;
+import ru.shumilova.weatherapp.data.WeatherService;
 import ru.shumilova.weatherapp.data.models.ErrorType;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 import ru.shumilova.weatherapp.domain.WeatherState;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
 import ru.shumilova.weatherapp.R;
+
+import static ru.shumilova.weatherapp.data.WeatherService.BROADCAST_ACTION_WEATHER;
+import static ru.shumilova.weatherapp.data.WeatherService.EXTRA_RESULT;
 
 public class MainFragment extends Fragment {
 
@@ -42,7 +50,34 @@ public class MainFragment extends Fragment {
     private static final String YANDEX_URL = "https://yandex.ru/pogoda/";
     private static final String PARAMS = MainFragment.class.getName() + "PARAMS";
 
-    private WeatherRepository wr = new WeatherRepository();
+    private boolean isBound = false;
+    private WeatherService.ServiceBinder boundService;
+    private ServiceConnection boundServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            boundService = (WeatherService.ServiceBinder) service;
+            isBound = boundService != null;
+            if (boundService != null) {
+                boundService.getWeather(city);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBound = false;
+            boundService = null;
+        }
+    };
+
+    private BroadcastReceiver weatherReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            WeatherState weatherState = (WeatherState) intent.getSerializableExtra(EXTRA_RESULT);
+            if (weatherState != null) {
+                onWeatherState(weatherState);
+            }
+        }
+    };
 
     private TextView tvCity;
     private TextView tvTemperature;
@@ -57,8 +92,10 @@ public class MainFragment extends Fragment {
     private ProgressBar pbLoaderRV;
     private SwipeRefreshLayout srlWeekWeather;
     private LocalRepository localRepository;
-    private String previousCity;
     private AlertDialog errorDialog;
+
+    private String previousCity;
+    private String city;
 
     public static MainFragment newInstance(Bundle bundle) {
         MainFragment fragment = new MainFragment();
@@ -89,50 +126,33 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        localRepository = new LocalRepository(getContext());
-
-        wr.getWeatherData().observe(getViewLifecycleOwner(), new Observer<WeatherState>() {
-            @Override
-            public void onChanged(WeatherState weatherState) {
-                if (weatherState.getErrorType() != null) {
-                    showError(weatherState);
-                    if (weatherState.getErrorType() == ErrorType.CITY_NOT_FOUND) {
-                        wr.getCityWeather(previousCity);
-                        wr.getWeatherWeek(previousCity);
-                    }
-                } else if (weatherState.getWeatherResponse() != null) {
-                    localRepository.saveCity(weatherState.getWeatherResponse());
-                    renderWeather(weatherState.getWeatherResponse());
-                } else if (weatherState.getWeatherWeeklyResponse() != null) {
-                    DailyWeatherAdapter adapter = (DailyWeatherAdapter) rvDailyWeather.getAdapter();
-                    if (adapter != null) {
-                        adapter.setDailyWeatherDataSource(weatherState.getWeatherWeeklyResponse().getList());
-
-                        pbLoaderRV.setVisibility(View.GONE);
-
-                        srlWeekWeather.setRefreshing(false);
-                    }
-                }
-            }
-        });
+        localRepository = new LocalRepository(requireContext());
 
         initView(view);
         initButtons();
         initRecyclerView();
 
+        Intent intent = new Intent(requireContext(), WeatherService.class);
+        requireActivity().bindService(intent, boundServiceConnection, Context.BIND_AUTO_CREATE);
+
+
         if (getArguments() != null) {
             Serializable params = getArguments().getSerializable(PARAMS);
             if (params != null) {
-                String city = ((MainParams) params).getCityName();
-                wr.getCityWeather(city);
-                wr.getWeatherWeek(city);
+                city = ((MainParams) params).getCityName();
+            } else {
+                city = previousCity;
             }
         } else {
-            String cityName = localRepository.getSelectedCity();
-            wr.getCityWeather(cityName);
-            wr.getWeatherWeek(cityName);
+            city = localRepository.getSelectedCity();
         }
         onRestoreState(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        requireActivity().registerReceiver(weatherReceiver, new IntentFilter(BROADCAST_ACTION_WEATHER));
     }
 
     private void showError(WeatherState weatherState) {
@@ -192,9 +212,12 @@ public class MainFragment extends Fragment {
 
         rvDailyWeather.setAdapter(new DailyWeatherAdapter());
 
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), RecyclerView.VERTICAL);
-        itemDecoration.setDrawable(getContext().getDrawable(R.drawable.separator));
-        rvDailyWeather.addItemDecoration(itemDecoration);
+        Drawable decorationDrawable = requireContext().getDrawable(R.drawable.separator);
+        if (decorationDrawable != null) {
+            DividerItemDecoration itemDecoration = new DividerItemDecoration(requireContext(), RecyclerView.VERTICAL);
+            itemDecoration.setDrawable(decorationDrawable);
+            rvDailyWeather.addItemDecoration(itemDecoration);
+        }
     }
 
     @Override
@@ -238,8 +261,7 @@ public class MainFragment extends Fragment {
         srlWeekWeather.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                wr.getCityWeather(tvCity.getText().toString());
-                wr.getWeatherWeek(tvCity.getText().toString());
+                boundService.getWeather(tvCity.getText().toString());
             }
         });
     }
@@ -258,4 +280,33 @@ public class MainFragment extends Fragment {
         srlWeekWeather = view.findViewById(R.id.srl_week_weather);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (isBound) {
+            requireActivity().unbindService(boundServiceConnection);
+        }
+        requireActivity().unregisterReceiver(weatherReceiver);
+    }
+
+    private void onWeatherState(WeatherState weatherState) {
+        if (weatherState.getErrorType() != null) {
+            showError(weatherState);
+            if (weatherState.getErrorType() == ErrorType.CITY_NOT_FOUND) {
+                boundService.getWeather(previousCity);
+            }
+        } else if (weatherState.getWeatherResponse() != null) {
+            localRepository.saveCity(weatherState.getWeatherResponse());
+            renderWeather(weatherState.getWeatherResponse());
+        } else if (weatherState.getWeatherWeeklyResponse() != null) {
+            DailyWeatherAdapter adapter = (DailyWeatherAdapter) rvDailyWeather.getAdapter();
+            if (adapter != null) {
+                adapter.setDailyWeatherDataSource(weatherState.getWeatherWeeklyResponse().getList());
+
+                pbLoaderRV.setVisibility(View.GONE);
+
+                srlWeekWeather.setRefreshing(false);
+            }
+        }
+    }
 }
