@@ -16,12 +16,14 @@
     <string name="info">Info</string>
     <string name="settings">Settings</string>
     <string name="exit_or_not">Exit?</string>
-    <string name="yes_exit">Yes, exit</string>
+    <string name="yes_exit">Yes</string>
     <string name="developer_info">Developer info</string>
     <string name="developer_info_disclaimer">For thirty years and three years, Ilya Muromets lay on the stove. Russia did not know such a feat of self-isolation.</string>
     <string name="error_msg_city_not_found">City not found</string>
     <string name="error_msg_no_connection">No connection</string>
     <string name="common_ok" translatable="false">OK</string>
     <string name="search">Search</string>
+    <string name="no">No</string>
+    <string name="custom_text">This is my custom textView for example.</string>
 
 </resources>

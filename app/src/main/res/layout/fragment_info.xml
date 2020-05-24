@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/main_background"
     android:orientation="vertical">
-
 
     <TextView
         android:id="@+id/tv_developer_info"
@@ -14,6 +14,13 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/base_margins"
         android:text="@string/developer_info" />
+
+    <ru.shumilova.weatherapp.custom_view.MyTemperatureView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="@dimen/base_margins"
+        app:text="@string/custom_text"
+        app:text_color="?attr/weather_item_layout_text_Color" />
 
     <TextView
         android:id="@+id/tv_info_disclaimer"
