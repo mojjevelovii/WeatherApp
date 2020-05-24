@@ -28,7 +28,7 @@ import ru.shumilova.weatherapp.domain.WeatherState;
 
 
 public class WeatherRepository {
-    private Gson gson = new Gson();
+    private WeatherMapper mapper = new WeatherMapper();
     private MutableLiveData<WeatherState> weatherMutableData = new MutableLiveData<>();
 
     public LiveData<WeatherState> getWeatherData() {
@@ -46,7 +46,7 @@ public class WeatherRepository {
 
                 result = getWeather(urlString);
                 if (result != null) {
-                    WeatherResponse weatherResponse = gson.fromJson(result, WeatherResponse.class);
+                    WeatherResponse weatherResponse = mapper.mapCityWeather(result);
                     weatherMutableData.postValue(new WeatherState(weatherResponse, null, null));
                 }
             }
@@ -94,29 +94,13 @@ public class WeatherRepository {
 
                 result = getWeather(urlString);
                 if (result != null) {
-                    WeatherWeeklyResponse weatherWeeklyResponse = gson.fromJson(result, WeatherWeeklyResponse.class);
-                    List<WeatherResponse> filteredList = filterDailyWeather(weatherWeeklyResponse);
-                    weatherWeeklyResponse.setList(filteredList);
+                    WeatherWeeklyResponse weatherWeeklyResponse = mapper.mapWeeklyWeather(result);
                     weatherMutableData.postValue(new WeatherState(null, weatherWeeklyResponse, null));
                 }
             }
 
         }).start();
     }
-
-    private List<WeatherResponse> filterDailyWeather(WeatherWeeklyResponse weatherWeeklyResponse) {
-        List<WeatherResponse> filteredList = new ArrayList<>();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH", Locale.getDefault());
-        for (int i = 0; i < weatherWeeklyResponse.getList().size(); i++) {
-            WeatherResponse weatherResponse = weatherWeeklyResponse.getList().get(i);
-            String time = simpleDateFormat.format(weatherResponse.getDt() * 1000);
-            if (time.equals("15")) {
-                filteredList.add(weatherResponse);
-            }
-        }
-        return filteredList;
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getLines(BufferedReader in) {
