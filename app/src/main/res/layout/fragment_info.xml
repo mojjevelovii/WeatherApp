@@ -24,4 +24,9 @@
         android:textAlignment="textStart"
         android:textSize="@dimen/small_font_size" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_foto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
