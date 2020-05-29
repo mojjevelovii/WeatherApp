@@ -15,13 +15,6 @@
         android:layout_margin="@dimen/base_margins"
         android:text="@string/developer_info" />
 
-    <ru.shumilova.weatherapp.custom_view.MyTemperatureView
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_margin="@dimen/base_margins"
-        app:text="@string/custom_text"
-        app:text_color="?attr/weather_item_layout_text_Color" />
-
     <TextView
         android:id="@+id/tv_info_disclaimer"
         android:layout_width="match_parent"
@@ -30,5 +23,10 @@
         android:text="@string/developer_info_disclaimer"
         android:textAlignment="textStart"
         android:textSize="@dimen/small_font_size" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_foto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

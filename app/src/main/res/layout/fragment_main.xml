@@ -43,8 +43,6 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/base_margins"
                     app:srcCompat="@drawable/ic_browser" />
-
-
             </LinearLayout>
 
             <LinearLayout
