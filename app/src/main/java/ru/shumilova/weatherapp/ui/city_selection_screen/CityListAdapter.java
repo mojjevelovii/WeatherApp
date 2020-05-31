@@ -1,4 +1,4 @@
-package ru.shumilova.weatherapp.city_selection_screen;
+package ru.shumilova.weatherapp.ui.city_selection_screen;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -16,26 +19,35 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 import ru.shumilova.weatherapp.R;
+import ru.shumilova.weatherapp.data.data_base.model.CityWeatherHistoryModel;
+import ru.shumilova.weatherapp.data.models.IconType;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 
 public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHolder> {
-    private List<WeatherResponse> cityNames;
-    private List<WeatherResponse> cachedCityNames;
+    private List<CityWeatherHistoryModel> cityNames = new ArrayList<>();
+    private List<CityWeatherHistoryModel> cachedCityNames = new ArrayList<>();
     private OnCitySelectListener listener;
 
-    public CityListAdapter(List<WeatherResponse> cityNames, OnCitySelectListener listener) {
-        this.cityNames = cityNames;
-        this.cachedCityNames = cityNames;
+    public CityListAdapter(LiveData<List<CityWeatherHistoryModel>> cityHistories, LifecycleOwner lifecycleOwner, OnCitySelectListener listener) {
+        cityHistories.observe(lifecycleOwner, new Observer<List<CityWeatherHistoryModel>>() {
+            @Override
+            public void onChanged(List<CityWeatherHistoryModel> cityWeatherHistoryModels) {
+                cityNames = cityWeatherHistoryModels;
+                cachedCityNames = cityWeatherHistoryModels;
+                notifyDataSetChanged();
+            }
+        });
+
         this.listener = listener;
     }
 
     public void filterCity(final String query) {
-        final List<WeatherResponse> filteredList = new ArrayList<>();
-        cachedCityNames.forEach(new Consumer<WeatherResponse>() {
+        final List<CityWeatherHistoryModel> filteredList = new ArrayList<>();
+        cachedCityNames.forEach(new Consumer<CityWeatherHistoryModel>() {
             @Override
-            public void accept(WeatherResponse weatherResponse) {
-                if (weatherResponse.getName().toLowerCase().contains(query.toLowerCase())) {
-                    filteredList.add(weatherResponse);
+            public void accept(CityWeatherHistoryModel cityWeatherHistoryModel) {
+                if (cityWeatherHistoryModel.getCityName().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(cityWeatherHistoryModel);
                 }
             }
         });
@@ -87,28 +99,28 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
             });
         }
 
-        void bind(WeatherResponse weatherResponse) {
-            bindCityName(weatherResponse.getName());
-            bindDate(weatherResponse);
-            bindTemperature(weatherResponse);
-            bindIcon(weatherResponse);
+        void bind(CityWeatherHistoryModel cityWeatherHistoryModel) {
+            bindCityName(cityWeatherHistoryModel.getCityName());
+            bindDate(cityWeatherHistoryModel);
+            bindTemperature(cityWeatherHistoryModel);
+            bindIcon(cityWeatherHistoryModel);
         }
 
         private void bindCityName(String name) {
             this.cityName.setText(name);
         }
 
-        private void bindDate(WeatherResponse weatherData) {
+        private void bindDate(CityWeatherHistoryModel cityWeatherHistoryModel) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-            long time = weatherData.getDt() * 1000;
+            long time = cityWeatherHistoryModel.getDate() * 1000;
             String date = simpleDateFormat.format(time);
             cityDate.setText(date);
         }
 
-        private void bindTemperature(WeatherResponse weatherData) {
+        private void bindTemperature(CityWeatherHistoryModel cityWeatherHistoryModel) {
             String temperature;
 
-            int intTemperature = (int) weatherData.getMain().getTemp();
+            int intTemperature = (int) cityWeatherHistoryModel.getTemperature();
             if (intTemperature > 0) {
                 temperature = "+" + intTemperature + "°";
             } else if (intTemperature < 0) {
@@ -120,8 +132,9 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.ViewHo
             cityTemperature.setText(temperature);
         }
 
-        private void bindIcon(WeatherResponse weatherData) {
-            weatherIcon.setImageResource(weatherData.getWeather().get(0).getIcon().getIconRes());
+        private void bindIcon(CityWeatherHistoryModel cityWeatherHistoryModel) {
+            IconType iconType = IconType.valueOf(cityWeatherHistoryModel.getWeather());
+            weatherIcon.setImageResource(iconType.getIconRes());
         }
     }
 

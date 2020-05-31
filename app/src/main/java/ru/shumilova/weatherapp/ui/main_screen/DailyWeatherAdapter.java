@@ -1,4 +1,4 @@
-package ru.shumilova.weatherapp.main_screen;
+package ru.shumilova.weatherapp.ui.main_screen;
 
 import android.view.LayoutInflater;
 import android.view.View;

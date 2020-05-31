@@ -1,4 +1,4 @@
-package ru.shumilova.weatherapp.preferences_screen;
+package ru.shumilova.weatherapp.ui.preferences_screen;
 
 import android.os.Bundle;
 
