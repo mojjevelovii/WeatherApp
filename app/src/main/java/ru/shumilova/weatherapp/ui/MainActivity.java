@@ -1,4 +1,4 @@
-package ru.shumilova.weatherapp;
+package ru.shumilova.weatherapp.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +12,15 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
 
-import ru.shumilova.weatherapp.city_selection_screen.CitySelectionFragment;
+import ru.shumilova.weatherapp.R;
+import ru.shumilova.weatherapp.ui.city_selection_screen.CitySelectionFragment;
 import ru.shumilova.weatherapp.data.LocalRepository;
-import ru.shumilova.weatherapp.info_screen.InfoFragment;
-import ru.shumilova.weatherapp.main_screen.MainFragment;
+import ru.shumilova.weatherapp.ui.info_screen.InfoFragment;
+import ru.shumilova.weatherapp.ui.main_screen.MainFragment;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
-import ru.shumilova.weatherapp.preferences_screen.PreferencesFragment;
+import ru.shumilova.weatherapp.ui.preferences_screen.PreferencesFragment;
 
 public class MainActivity extends AppCompatActivity implements Navigable {
     private BottomNavigationView bnvNavigation;
@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements Navigable {
         if (savedInstanceState == null) {
             navigateTo(FragmentType.MAIN, null, true);
         }
-
     }
 
     private void initTheme() {

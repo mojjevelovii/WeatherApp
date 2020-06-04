@@ -1,4 +1,4 @@
-package ru.shumilova.weatherapp.city_selection_screen;
+package ru.shumilova.weatherapp.ui.city_selection_screen;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,7 +26,7 @@ import ru.shumilova.weatherapp.data.LocalRepository;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
 import ru.shumilova.weatherapp.R;
-import ru.shumilova.weatherapp.main_screen.MainFragment;
+import ru.shumilova.weatherapp.ui.main_screen.MainFragment;
 
 public class CitySelectionFragment extends Fragment implements CityListAdapter.OnCitySelectListener {
 
@@ -71,13 +71,12 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         rvCityList.setLayoutManager(layoutManager);
-        rvCityList.setAdapter(new CityListAdapter(localRepository.loadCityList(), this));
+        rvCityList.setAdapter(new CityListAdapter(localRepository.loadCityList(), getViewLifecycleOwner(), this));
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), RecyclerView.VERTICAL);
         itemDecoration.setDrawable(getContext().getDrawable(R.drawable.separator));
         rvCityList.addItemDecoration(itemDecoration);
     }
-
 
     private void initButtons() {
 

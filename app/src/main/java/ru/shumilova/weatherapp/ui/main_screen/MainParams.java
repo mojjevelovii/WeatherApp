@@ -1,11 +1,11 @@
-package ru.shumilova.weatherapp.main_screen;
+package ru.shumilova.weatherapp.ui.main_screen;
 
 import java.io.Serializable;
 
 public class MainParams implements Serializable {
     private String cityName;
 
-    public MainParams (String cityName) {
+    public MainParams(String cityName) {
         this.cityName = cityName;
     }
 

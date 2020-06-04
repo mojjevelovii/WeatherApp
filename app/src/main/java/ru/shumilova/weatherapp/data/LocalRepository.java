@@ -3,6 +3,8 @@ package ru.shumilova.weatherapp.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.lifecycle.LiveData;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -12,50 +14,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.shumilova.weatherapp.App;
+import ru.shumilova.weatherapp.data.data_base.model.CityWeatherHistoryModel;
+import ru.shumilova.weatherapp.data.models.Main;
 import ru.shumilova.weatherapp.data.models.WeatherResponse;
 
 public class LocalRepository {
     private SharedPreferences sharedPreferences;
-    private Map<String, WeatherResponse> cityMap = new HashMap<>();
     private static final String SELECTED_CITY = "SELECTED_CITY";
     private static final String LOCAL_REPOSITORY = "LOCAL_REPOSITORY";
-    private static final String CITIES = "CITIES";
     private static final String DARK_THEME = "DARK_THEME";
-
-    private Gson gson = new Gson();
-
 
     public LocalRepository(Context context) {
         this.sharedPreferences = context.getSharedPreferences(LOCAL_REPOSITORY, Context.MODE_PRIVATE);
-        restoreCityHistory();
-    }
-
-    private void restoreCityHistory() {
-        String cities = sharedPreferences.getString(CITIES, null);
-        if (cities != null) {
-            Type cityMapType = new TypeToken<Map<String, WeatherResponse>>() {
-            }.getType();
-            cityMap = gson.fromJson(cities, cityMapType);
-        } else {
-            cityMap = new HashMap<>();
-        }
     }
 
     public void saveCity(WeatherResponse weatherResponse) {
-        SharedPreferences.Editor spEditor = sharedPreferences.edit();
-        cityMap.put(weatherResponse.getName(), weatherResponse);
-        String json = gson.toJson(cityMap);
-
-        spEditor.putString(CITIES, json);
-        spEditor.apply();
+        CityWeatherHistoryModel cityWeatherHistoryModel = new CityWeatherHistoryModel(
+                weatherResponse.getName(),
+                weatherResponse.getMain().getTemp(),
+                weatherResponse.getWeather().get(0).getIcon().name(),
+                weatherResponse.getDt());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                App.getInstance().getWeatherDao().insertWeather(cityWeatherHistoryModel);
+            }
+        }).start();
     }
 
-    public List<WeatherResponse> loadCityList() {
-        List<WeatherResponse> cityList = new ArrayList<>();
-        for (Map.Entry<String, WeatherResponse> e : cityMap.entrySet()) {
-            cityList.add(e.getValue());
-        }
-        return cityList;
+    public LiveData<List<CityWeatherHistoryModel>> loadCityList() {
+        return App.getInstance().getWeatherDao().getAllWeather();
     }
 
     public boolean isDarkTheme() {
