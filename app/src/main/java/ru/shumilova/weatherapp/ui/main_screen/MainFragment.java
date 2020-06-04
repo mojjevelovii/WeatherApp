@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -24,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.Serializable;
 
 import ru.shumilova.weatherapp.data.LocalRepository;
@@ -34,6 +38,7 @@ import ru.shumilova.weatherapp.domain.WeatherState;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
 import ru.shumilova.weatherapp.R;
+import ru.shumilova.weatherapp.utils.NetworkBroadcastReceiver;
 
 public class MainFragment extends Fragment {
 
@@ -59,6 +64,8 @@ public class MainFragment extends Fragment {
     private LocalRepository localRepository;
     private String previousCity;
     private AlertDialog errorDialog;
+    private NetworkBroadcastReceiver networkBroadcastReceiver;
+    private Snackbar snackbar;
 
     public static MainFragment newInstance(Bundle bundle) {
         MainFragment fragment = new MainFragment();
@@ -133,6 +140,26 @@ public class MainFragment extends Fragment {
             wr.getWeatherWeek(cityName);
         }
         onRestoreState(savedInstanceState);
+
+        networkBroadcastReceiver = new NetworkBroadcastReceiver(new NetworkBroadcastReceiver.ConnectivityReceiverListener() {
+            @Override
+            public void onNetworkConnectionChanged(boolean isConnected) {
+                showNetworkMessage(isConnected);
+            }
+        });
+
+        requireActivity().registerReceiver(networkBroadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void showNetworkMessage(boolean isConnected) {
+        if (isConnected) {
+            if (snackbar != null) {
+                snackbar.dismiss();
+            }
+        } else {
+            snackbar = Snackbar.make(rvDailyWeather, R.string.error_msg_no_connection, Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+        }
     }
 
     private void showError(WeatherState weatherState) {
@@ -258,4 +285,9 @@ public class MainFragment extends Fragment {
         srlWeekWeather = view.findViewById(R.id.srl_week_weather);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        requireActivity().unregisterReceiver(networkBroadcastReceiver);
+    }
 }
