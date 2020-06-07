@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -91,9 +92,9 @@ public class MainFragment extends Fragment {
         return fragment;
     }
 
-    public static Bundle createParams(String cityName) {
+    public static Bundle createParams(String cityName, LatLng latLngPosition) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(PARAMS, new MainParams(cityName));
+        bundle.putSerializable(PARAMS, new MainParams(cityName, latLngPosition));
         return bundle;
     }
 
@@ -202,8 +203,14 @@ public class MainFragment extends Fragment {
             Serializable params = getArguments().getSerializable(PARAMS);
             if (params != null) {
                 String city = ((MainParams) params).getCityName();
-                wr.getCityWeather(city);
-                wr.getWeatherWeek(city);
+                LatLng latLngPosition = ((MainParams) params).getLatLngPosition();
+                if (city != null) {
+                    wr.getCityWeather(city);
+                    wr.getWeatherWeek(city);
+                } else if (latLngPosition != null) {
+                    wr.getWeatherWeekByGeo(latLngPosition.latitude, latLngPosition.longitude);
+                    wr.getWeatherByGeo(latLngPosition.latitude, latLngPosition.longitude);
+                }
             }
         } else {
             String cityName = localRepository.getSelectedCity();

@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.map_screen.MapsFragment" />
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.map_screen.MapsFragment" />
+
+    <Button
+        android:id="@+id/btn_show_Weather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/base_margins"
+        android:background="?attr/main_background"
+        android:text="@string/show_weather"
+        android:textColor="?attr/colorPrimaryDark"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</FrameLayout>

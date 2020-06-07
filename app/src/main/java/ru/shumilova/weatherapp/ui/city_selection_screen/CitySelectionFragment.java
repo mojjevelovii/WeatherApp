@@ -89,7 +89,7 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
     }
 
     private void navigateToMain(String cityName) {
-        Bundle mainBundle = MainFragment.createParams(cityName);
+        Bundle mainBundle = MainFragment.createParams(cityName, null);
         navigator.navigateTo(FragmentType.MAIN, mainBundle, true);
     }
 
