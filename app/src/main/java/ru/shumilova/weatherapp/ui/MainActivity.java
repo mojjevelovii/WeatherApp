@@ -20,6 +20,7 @@ import ru.shumilova.weatherapp.ui.info_screen.InfoFragment;
 import ru.shumilova.weatherapp.ui.main_screen.MainFragment;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
+import ru.shumilova.weatherapp.ui.map_screen.MapsFragment;
 import ru.shumilova.weatherapp.ui.preferences_screen.PreferencesFragment;
 
 public class MainActivity extends AppCompatActivity implements Navigable {
@@ -113,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements Navigable {
                 break;
             case INFO:
                 fragment = InfoFragment.newInstance(bundle);
+                break;
+            case WEATHER_MAP:
+                fragment = new MapsFragment();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown fragment type!");

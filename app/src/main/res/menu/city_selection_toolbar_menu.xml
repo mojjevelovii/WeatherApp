@@ -8,4 +8,11 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/item_weather_map"
+        android:icon="@drawable/ic_map"
+        android:orderInCategory="10"
+        android:title="@string/search"
+        app:showAsAction="always" />
 </menu>

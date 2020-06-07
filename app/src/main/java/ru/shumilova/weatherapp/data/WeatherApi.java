@@ -16,4 +16,11 @@ public interface WeatherApi {
     Call<WeatherWeeklyResponse> getWeatherWeek(@Query("q") String cityName, @Query("units") String units,
                                                @Query("lang") String language, @Header("x-api-key") String token);
 
+    @GET("weather")
+    Call<WeatherResponse> getWeatherByGeo(@Query("lat") double lat, @Query("lon") double lon, @Query("units") String units,
+                                          @Query("lang") String language, @Header("x-api-key") String token);
+
+    @GET("forecast")
+    Call<WeatherWeeklyResponse> getWeatherWeekByGeo(@Query("lat") double lat, @Query("lon") double lon, @Query("units") String units,
+                                                    @Query("lang") String language, @Header("x-api-key") String token);
 }

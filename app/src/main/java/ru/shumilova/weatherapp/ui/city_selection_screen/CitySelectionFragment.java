@@ -109,6 +109,14 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.city_selection_toolbar_menu, menu);
         MenuItem search = menu.findItem(R.id.item_action_search);
+        MenuItem weatherMap = menu.findItem(R.id.item_weather_map);
+        weatherMap.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                navigator.navigateTo(FragmentType.WEATHER_MAP, null, true);
+                return true;
+            }
+        });
         final SearchView searchCity = (SearchView) search.getActionView();
         searchCity.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
