@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,12 +19,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.Serializable;
 
@@ -34,6 +43,7 @@ import ru.shumilova.weatherapp.domain.WeatherState;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
 import ru.shumilova.weatherapp.R;
+import ru.shumilova.weatherapp.utils.NetworkBroadcastReceiver;
 
 public class MainFragment extends Fragment {
 
@@ -41,6 +51,7 @@ public class MainFragment extends Fragment {
     private static final String PREVIOUS_CITY_NAME_KEY = "PREVIOUS_CITY_NAME_KEY";
     private static final String YANDEX_URL = "https://yandex.ru/pogoda/";
     private static final String PARAMS = MainFragment.class.getName() + "PARAMS";
+    private static final String PUSH_TOKEN = "PUSH_TOKEN";
 
     private WeatherRepository wr = new WeatherRepository();
 
@@ -59,6 +70,8 @@ public class MainFragment extends Fragment {
     private LocalRepository localRepository;
     private String previousCity;
     private AlertDialog errorDialog;
+    private NetworkBroadcastReceiver networkBroadcastReceiver;
+    private Snackbar snackbar;
 
     public static MainFragment newInstance(Bundle bundle) {
         MainFragment fragment = new MainFragment();
@@ -133,6 +146,44 @@ public class MainFragment extends Fragment {
             wr.getWeatherWeek(cityName);
         }
         onRestoreState(savedInstanceState);
+        initBroadcastReceiver();
+        getFCMToken();
+    }
+
+    private void getFCMToken() {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(PUSH_TOKEN, task.getResult().getToken());
+                        } else {
+                            Log.d(PUSH_TOKEN, "FAIL");
+                        }
+                    }
+                });
+    }
+
+    private void initBroadcastReceiver() {
+        networkBroadcastReceiver = new NetworkBroadcastReceiver(new NetworkBroadcastReceiver.ConnectivityReceiverListener() {
+            @Override
+            public void onNetworkConnectionChanged(boolean isConnected) {
+                showNetworkMessage(isConnected);
+            }
+        });
+
+        requireActivity().registerReceiver(networkBroadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void showNetworkMessage(boolean isConnected) {
+        if (isConnected) {
+            if (snackbar != null) {
+                snackbar.dismiss();
+            }
+        } else {
+            snackbar = Snackbar.make(rvDailyWeather, R.string.error_msg_no_connection, Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+        }
     }
 
     private void showError(WeatherState weatherState) {
@@ -258,4 +309,9 @@ public class MainFragment extends Fragment {
         srlWeekWeather = view.findViewById(R.id.srl_week_weather);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        requireActivity().unregisterReceiver(networkBroadcastReceiver);
+    }
 }
