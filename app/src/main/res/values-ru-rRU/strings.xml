@@ -24,4 +24,6 @@
     <string name="no">Нет</string>
     <string name="custom_text">Это мой кастомный textView для примера.</string>
     <string name="error_msg_unknown">Неизвестная ошибка</string>
+    <string name="weather_is_here">Погода здесь</string>
+    <string name="show_weather">Показать погоду</string>
 </resources>

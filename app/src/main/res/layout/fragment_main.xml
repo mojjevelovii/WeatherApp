@@ -27,22 +27,32 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_weather_geo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_margin="@dimen/base_margins"
+                    app:srcCompat="@drawable/ic_map" />
+
                 <TextView
                     android:id="@+id/tv_city"
                     style="@style/MainHeaderText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/base_margins"
+                    android:layout_weight="1"
                     android:text="@string/moscow" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_extra"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="top"
                     android:layout_margin="@dimen/base_margins"
                     app:srcCompat="@drawable/ic_browser" />
+
             </LinearLayout>
 
             <LinearLayout

@@ -71,6 +71,37 @@ public class WeatherRepository {
         });
     }
 
+    public void getWeatherByGeo(final double lat, final double lon) {
+        weatherApi.getWeatherByGeo(lat, lon, "metric", Locale.getDefault().getLanguage(),
+                BuildConfig.WEATHER_API).enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    WeatherResponse result = response.body();
+                    weatherMutableData.postValue(new WeatherState(result, null, null));
+                } else if (response.errorBody() != null) {
+                    errorHandle(response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                weatherMutableData.postValue(new WeatherState(null, null, ErrorType.CONNECTION_ERROR));
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(RETRY_TIME_OUT);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getWeatherByGeo(lat, lon);
+                    }
+                }).start();
+            }
+        });
+    }
+
     private void errorHandle(ResponseBody responseBody) {
         try {
             if (responseBody.string().contains("city not found")) {
@@ -110,6 +141,39 @@ public class WeatherRepository {
                             e.printStackTrace();
                         }
                         getWeatherWeek(cityName);
+                    }
+                }).start();
+            }
+        });
+    }
+
+    public void getWeatherWeekByGeo(final double lat, final double lon) {
+        weatherApi.getWeatherWeekByGeo(lat, lon, "metric", Locale.getDefault().getLanguage(),
+                BuildConfig.WEATHER_API).enqueue(new Callback<WeatherWeeklyResponse>() {
+            @Override
+            public void onResponse(Call<WeatherWeeklyResponse> call, Response<WeatherWeeklyResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    WeatherWeeklyResponse result = response.body();
+                    List<WeatherResponse> filteredList = filterDailyWeather(result);
+                    result.setList(filteredList);
+                    weatherMutableData.postValue(new WeatherState(null, result, null));
+                } else if (response.errorBody() != null) {
+                    errorHandle(response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherWeeklyResponse> call, Throwable t) {
+                weatherMutableData.postValue(new WeatherState(null, null, ErrorType.CONNECTION_ERROR));
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(RETRY_TIME_OUT);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getWeatherWeekByGeo(lat, lon);
                     }
                 }).start();
             }

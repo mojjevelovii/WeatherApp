@@ -1,10 +1,17 @@
 package ru.shumilova.weatherapp.ui.main_screen;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +19,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -19,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -52,8 +62,10 @@ public class MainFragment extends Fragment {
     private static final String YANDEX_URL = "https://yandex.ru/pogoda/";
     private static final String PARAMS = MainFragment.class.getName() + "PARAMS";
     private static final String PUSH_TOKEN = "PUSH_TOKEN";
+    private static final int PERMISSION_REQUEST_CODE = 10;
 
     private WeatherRepository wr = new WeatherRepository();
+    private LocationListener locationListener;
 
     private TextView tvCity;
     private TextView tvTemperature;
@@ -72,6 +84,7 @@ public class MainFragment extends Fragment {
     private AlertDialog errorDialog;
     private NetworkBroadcastReceiver networkBroadcastReceiver;
     private Snackbar snackbar;
+    private AppCompatImageView ivWeatherGeo;
 
     public static MainFragment newInstance(Bundle bundle) {
         MainFragment fragment = new MainFragment();
@@ -79,9 +92,9 @@ public class MainFragment extends Fragment {
         return fragment;
     }
 
-    public static Bundle createParams(String cityName) {
+    public static Bundle createParams(String cityName, LatLng latLngPosition) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(PARAMS, new MainParams(cityName));
+        bundle.putSerializable(PARAMS, new MainParams(cityName, latLngPosition));
         return bundle;
     }
 
@@ -96,6 +109,59 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.fragment_main, container, false);
+    }
+
+    private void requestPermissions() {
+        if (isCoarseLocationGranted() || isFineLocationGranted()) {
+            requestLocation();
+        } else {
+            requestLocationPermissions();
+        }
+    }
+
+    private boolean isFineLocationGranted() {
+        return ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean isCoarseLocationGranted() {
+        return ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED;
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestLocation() {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        String provider = locationManager.getBestProvider(criteria, true);
+        if (provider != null) {
+            locationManager.requestSingleUpdate(provider, locationListener, Looper.getMainLooper());
+        }
+    }
+
+    private void requestLocationPermissions() {
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length == 2 &&
+                    (grantResults[0] == PackageManager.PERMISSION_GRANTED ||
+                            grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                requestLocation();
+            }
+        }
     }
 
     @Override
@@ -137,8 +203,14 @@ public class MainFragment extends Fragment {
             Serializable params = getArguments().getSerializable(PARAMS);
             if (params != null) {
                 String city = ((MainParams) params).getCityName();
-                wr.getCityWeather(city);
-                wr.getWeatherWeek(city);
+                LatLng latLngPosition = ((MainParams) params).getLatLngPosition();
+                if (city != null) {
+                    wr.getCityWeather(city);
+                    wr.getWeatherWeek(city);
+                } else if (latLngPosition != null) {
+                    wr.getWeatherWeekByGeo(latLngPosition.latitude, latLngPosition.longitude);
+                    wr.getWeatherByGeo(latLngPosition.latitude, latLngPosition.longitude);
+                }
             }
         } else {
             String cityName = localRepository.getSelectedCity();
@@ -148,6 +220,29 @@ public class MainFragment extends Fragment {
         onRestoreState(savedInstanceState);
         initBroadcastReceiver();
         getFCMToken();
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                wr.getWeatherByGeo(lat, lng);
+                wr.getWeatherWeekByGeo(lat, lng);
+                srlWeekWeather.setRefreshing(true);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
+        };
     }
 
     private void getFCMToken() {
@@ -293,6 +388,13 @@ public class MainFragment extends Fragment {
                 wr.getWeatherWeek(tvCity.getText().toString());
             }
         });
+
+        ivWeatherGeo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestPermissions();
+            }
+        });
     }
 
     private void initView(View view) {
@@ -307,6 +409,7 @@ public class MainFragment extends Fragment {
         llMainContainer = view.findViewById(R.id.ll_main_container);
         pbLoaderRV = view.findViewById(R.id.pb_loader_rv);
         srlWeekWeather = view.findViewById(R.id.srl_week_weather);
+        ivWeatherGeo = view.findViewById(R.id.iv_weather_geo);
     }
 
     @Override
