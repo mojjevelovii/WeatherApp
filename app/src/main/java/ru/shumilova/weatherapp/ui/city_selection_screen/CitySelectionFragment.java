@@ -1,6 +1,8 @@
 package ru.shumilova.weatherapp.ui.city_selection_screen;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import ru.shumilova.weatherapp.AppConfig;
 import ru.shumilova.weatherapp.data.LocalRepository;
 import ru.shumilova.weatherapp.navigation.FragmentType;
 import ru.shumilova.weatherapp.navigation.Navigable;
@@ -113,7 +116,19 @@ public class CitySelectionFragment extends Fragment implements CityListAdapter.O
         weatherMap.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                navigator.navigateTo(FragmentType.WEATHER_MAP, null, true);
+                if (AppConfig.IS_GEO_ENABLED) {
+                    navigator.navigateTo(FragmentType.WEATHER_MAP, null, true);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(R.string.pro_version);
+                    builder.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.create().show();
+                }
                 return true;
             }
         });

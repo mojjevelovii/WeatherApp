@@ -45,6 +45,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.Serializable;
 
+import ru.shumilova.weatherapp.AppConfig;
 import ru.shumilova.weatherapp.data.LocalRepository;
 import ru.shumilova.weatherapp.data.WeatherRepository;
 import ru.shumilova.weatherapp.data.models.ErrorType;
@@ -218,7 +219,6 @@ public class MainFragment extends Fragment {
             wr.getWeatherWeek(cityName);
         }
         onRestoreState(savedInstanceState);
-        initBroadcastReceiver();
         getFCMToken();
 
         locationListener = new LocationListener() {
@@ -392,7 +392,20 @@ public class MainFragment extends Fragment {
         ivWeatherGeo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestPermissions();
+                if (AppConfig.IS_GEO_ENABLED) {
+                    requestPermissions();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(R.string.pro_version);
+                    builder.setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.create().show();
+                }
+
             }
         });
     }
@@ -413,8 +426,16 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        requireActivity().unregisterReceiver(networkBroadcastReceiver);
+    public void onStart() {
+        super.onStart();
+        initBroadcastReceiver();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (networkBroadcastReceiver != null) {
+            requireActivity().unregisterReceiver(networkBroadcastReceiver);
+        }
     }
 }

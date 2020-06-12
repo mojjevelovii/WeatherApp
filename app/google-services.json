@@ -42,6 +42,80 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549293924366:android:45111ed3d68790b03fdc5f",
+        "android_client_info": {
+          "package_name": "ru.shumilova.weatherapp.light"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549293924366-pkbsmvsm1hdkkboid20i7vg838fe2mba.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.shumilova.weatherapp.light",
+            "certificate_hash": "9b27721d0bb6bb5b3107507babe6d46748e765e6"
+          }
+        },
+        {
+          "client_id": "549293924366-jurbc2gv6tac1ncet9hulavimhre95la.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH2b69PC4yWSFpk8j835BjQ2Lm8j2jH5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549293924366-jurbc2gv6tac1ncet9hulavimhre95la.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549293924366:android:9928ff8abafbf7a43fdc5f",
+        "android_client_info": {
+          "package_name": "ru.shumilova.weatherapp.pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549293924366-actth7lmv01i7p10nk76fvvjfsgsg5fm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.shumilova.weatherapp.pro",
+            "certificate_hash": "9b27721d0bb6bb5b3107507babe6d46748e765e6"
+          }
+        },
+        {
+          "client_id": "549293924366-jurbc2gv6tac1ncet9hulavimhre95la.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH2b69PC4yWSFpk8j835BjQ2Lm8j2jH5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549293924366-jurbc2gv6tac1ncet9hulavimhre95la.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
