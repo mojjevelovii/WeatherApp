@@ -28,5 +28,6 @@
     <string name="custom_text">This is my custom textView for example.</string>
     <string name="weather_is_here">The weather is here</string>
     <string name="show_weather">Show weather</string>
+    <string name="pro_version">Geolocation weather is available in the PRO version</string>
 
 </resources>

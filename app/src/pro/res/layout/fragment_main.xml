@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/main_background"
-    android:orientation="horizontal">
+    android:orientation="vertical">
+
 
     <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="?attr/main_background"
         android:elevation="10dp">
 
@@ -18,7 +17,6 @@
             android:id="@+id/ll_main_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical"
             android:visibility="invisible"
             tools:visibility="visible">
@@ -40,21 +38,20 @@
                 <TextView
                     android:id="@+id/tv_city"
                     style="@style/MainHeaderText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/base_margins"
+                    android:layout_weight="1"
                     android:text="@string/moscow" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_extra"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="top"
                     android:layout_margin="@dimen/base_margins"
-                    android:backgroundTint="@color/text_color"
                     app:srcCompat="@drawable/ic_browser" />
-
 
             </LinearLayout>
 
@@ -95,6 +92,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/base_margins"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -127,9 +125,8 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:background="?attr/item_background">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -141,6 +138,7 @@
                 android:id="@+id/rv_week_weather"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:elevation="0dp"
                 tools:listitem="@layout/weather_item_layout" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -151,5 +149,6 @@
             android:layout_gravity="center"
             android:indeterminate="true" />
     </FrameLayout>
+
 
 </LinearLayout>
